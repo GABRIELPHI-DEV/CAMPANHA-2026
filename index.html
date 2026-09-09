@@ -13,12 +13,7 @@
             --border-color: #334155;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            
-            /* Cores das Abas do Menu */
-            --tab-federal: #3b82f6; /* Azul */
-            --tab-estadual: #a855f7; /* Roxo */
-            --tab-financeiro: #eab308; /* Amarelo */
-            --tab-resumo: #10b981; /* Verde */
+            --tab-federal: #3b82f6;
         }
 
         * {
@@ -40,11 +35,10 @@
 
         .container {
             width: 100%;
-            max-width: 1200px;
+            max-width: 1200px; /* Garante centralização e proporção perfeita */
             margin: 0 auto;
         }
 
-        /* Topo Centralizado e Elegante */
         header {
             text-align: center;
             background: linear-gradient(135deg, #1e3a8a, #1d4ed8);
@@ -60,7 +54,6 @@
             font-weight: 800;
             letter-spacing: -0.5px;
             text-transform: uppercase;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         .header-title p {
@@ -70,7 +63,6 @@
             font-weight: 500;
         }
 
-        /* Indicador de Atualização */
         .update-badge {
             background-color: rgba(0, 0, 0, 0.25);
             padding: 6px 16px;
@@ -81,7 +73,6 @@
             align-items: center;
             gap: 8px;
             margin-top: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .pulse-dot {
@@ -91,7 +82,6 @@
             border-radius: 50%;
         }
 
-        /* Título de Seção e Instrução */
         .section-instruction {
             text-align: center;
             font-size: 13px;
@@ -102,44 +92,25 @@
             font-weight: 700;
         }
 
-        /* Menu de Abas Customizado, Lindo e Moderno */
+        /* Menu Superior com Indicação Visual das Abas */
         .custom-tabs {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 12px;
+            grid-template-columns: 1fr;
             margin-bottom: 20px;
         }
 
-        .tab-btn {
-            background-color: var(--bg-card);
+        .tab-indicator-btn {
+            background-color: var(--tab-federal);
             border: 1px solid var(--border-color);
-            color: var(--text-main);
+            color: white;
             padding: 16px 20px;
             border-radius: 14px;
             font-size: 14px;
             font-weight: 700;
-            cursor: pointer;
-            transition: all 0.25s ease;
             text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
-        .tab-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Estilização Individual das Abas Ativas */
-        .tab-btn[data-tab="federal"].active { background-color: var(--tab-federal); border-color: var(--tab-federal); color: white; }
-        .tab-btn[data-tab="estadual"].active { background-color: var(--tab-estadual); border-color: var(--tab-estadual); color: white; }
-        .tab-btn[data-tab="financeiro"].active { background-color: var(--tab-financeiro); border-color: var(--tab-financeiro); color: #0f172a; }
-        .tab-btn[data-tab="resumo"].active { background-color: var(--tab-resumo); border-color: var(--tab-resumo); color: white; }
-
-        /* Container Principal da Planilha */
         .spreadsheet-container {
             background-color: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -158,7 +129,7 @@
 
         iframe {
             width: 100%;
-            height: 750px;
+            height: 780px;
             border: none;
         }
     </style>
@@ -178,41 +149,25 @@
             </div>
         </header>
 
-        <div class="section-instruction">Selecione o Painel de Dados Abaixo</div>
+        <div class="section-instruction">Navegação do Painel de Controle</div>
 
-        <!-- Links em formato /pubhtml parametrizados individualmente (Único formato com suporte a Iframe) -->
+        <!-- Indicador Unificado do Painel -->
         <div class="custom-tabs">
-            <button class="tab-btn active" data-tab="federal" onclick="switchTab('federal', 'https://google.com')">
-                🔵 DEPUTADO FEDERAL — DUÍLIO
-            </button>
-            <button class="tab-btn" data-tab="estadual" onclick="switchTab('estadual', 'https://google.com')">
-                🟣 DEPUTADOS ESTADUAIS
-            </button>
-            <button class="tab-btn" data-tab="financeiro" onclick="switchTab('financeiro', 'https://google.com')">
-                🟡 CONTROLE FINANCEIRO
-            </button>
-            <button class="tab-btn" data-tab="resumo" onclick="switchTab('resumo', 'https://google.com')">
-                🟢 RESUMO POR REGIÃO
-            </button>
+            <div class="tab-indicator-btn">
+                📊 MATRIZ OPERACIONAL INTEGRADA (NAVEGUE PELAS ABAS NO RODAPÉ DA PLANILHA)
+            </div>
         </div>
 
-        <!-- Box da Planilha Centralizada -->
+        <!-- Box da Planilha Centralizada com o Link Seguro e Abas Ativas -->
         <div class="spreadsheet-container">
             <div class="spreadsheet-wrapper">
-                <iframe id="sheet-iframe" src="https://google.com"></iframe>
+                <!-- A URL abaixo carrega Ribeirão das Neves primeiro e mantém as abas cinzas nativas do Google ativas na parte inferior livre de recusas -->
+                <iframe src="https://google.com"></iframe>
             </div>
         </div>
     </div>
 
     <script>
-        function switchTab(tabName, embedUrl) {
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            document.querySelector(`.tab-btn[data-tab="${tabName}"]`).classList.add('active');
-            document.getElementById('sheet-iframe').src = embedUrl;
-        }
-
         function updateTime() {
             const now = new Date();
             const timeString = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
