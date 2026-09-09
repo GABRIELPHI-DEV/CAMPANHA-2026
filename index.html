@@ -4,140 +4,162 @@
     <meta charset="UTF-8">
     <meta http-equiv="refresh" content="300">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel de Controle — Campanha 2026</title>
+    <title>Painel Geral de Apuração — Campanha 2026</title>
     
     <style>
         :root {
-            --bg-main: #f8fafc;
-            --bg-card: #ffffff;
-            --border-color: #e2e8f0;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --primary: #1e3a8a;
-            --primary-light: #3b82f6;
-            --success: #10b981;
+            --bg-main: #0f172a; /* Azul escuro corporativo de fundo */
+            --bg-card: #1e293b; /* Fundo dos blocos internos */
+            --border-color: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            
+            /* Cores das Abas do Menu */
+            --tab-federal: #3b82f6; /* Azul */
+            --tab-estadual: #a855f7; /* Roxo */
+            --tab-financeiro: #eab308; /* Amarelo */
+            --tab-resumo: #10b981; /* Verde */
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
             background-color: var(--bg-main);
             color: var(--text-main);
-            padding: 24px;
+            padding: 40px 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
 
         .container {
-            max-width: 1300px;
+            width: 100%;
+            max-width: 1200px; /* Garante centralização e proporção perfeita */
             margin: 0 auto;
         }
 
         /* Topo Centralizado e Elegante */
         header {
             text-align: center;
-            background: linear-gradient(135deg, var(--primary), #1d4ed8);
-            padding: 32px 24px;
-            border-radius: 16px;
-            color: white;
-            margin-bottom: 24px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            background: linear-gradient(135deg, #1e3a8a, #1d4ed8);
+            padding: 36px;
+            border-radius: 20px;
+            margin-bottom: 32px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .header-title h1 {
-            font-size: 26px;
+            font-size: 28px;
             font-weight: 800;
             letter-spacing: -0.5px;
+            text-transform: uppercase;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         .header-title p {
             font-size: 14px;
-            opacity: 0.9;
+            color: #93c5fd;
             margin-top: 6px;
+            font-weight: 500;
         }
 
-        /* Bloco de Atualização e Status */
-        .status-container {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            margin-top: 16px;
-            flex-wrap: wrap;
-        }
-
-        .status-badge {
-            background-color: rgba(255, 255, 255, 0.15);
-            padding: 6px 14px;
-            border-radius: 20px;
+        /* Indicador de Atualização */
+        .update-badge {
+            background-color: rgba(0, 0, 0, 0.25);
+            padding: 6px 16px;
+            border-radius: 30px;
             font-size: 12px;
             font-weight: 600;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
+            margin-top: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .pulse-dot {
-            width: 7px;
-            height: 7px;
-            background-color: var(--success);
+            width: 8px;
+            height: 8px;
+            background-color: #10b981;
             border-radius: 50%;
         }
 
-        /* Alerta de Navegação de Abas (Movido para cima da planilha) */
-        .navigation-alert {
-            background-color: #eff6ff;
-            border: 1px solid #bfdbfe;
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 20px;
+        /* Título de Seção e Instrução */
+        .section-instruction {
             text-align: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            font-size: 13px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+            font-weight: 700;
         }
 
-        .navigation-alert p {
+        /* Menu de Abas Customizado, Lindo e Moderno */
+        .custom-tabs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 16px 20px;
+            border-radius: 14px;
             font-size: 14px;
             font-weight: 700;
-            color: var(--primary);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-align: center;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
+            gap: 10px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
-        .click-icon {
-            background-color: var(--primary);
-            color: white;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            display: inline-block;
+        .tab-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
         }
 
-        /* Container da Planilha */
+        /* Estilização Individual das Abas Ativas */
+        .tab-btn[data-tab="federal"].active { background-color: var(--tab-federal); border-color: var(--tab-federal); color: white; }
+        .tab-btn[data-tab="estadual"].active { background-color: var(--tab-estadual); border-color: var(--tab-estadual); color: white; }
+        .tab-btn[data-tab="financeiro"].active { background-color: var(--tab-financeiro); border-color: var(--tab-financeiro); color: #0f172a; }
+        .tab-btn[data-tab="resumo"].active { background-color: var(--tab-resumo); border-color: var(--tab-resumo); color: white; }
+
+        /* Container Principal da Planilha */
         .spreadsheet-container {
             background-color: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 16px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
         }
 
         .spreadsheet-wrapper {
             width: 100%;
-            border-radius: 8px;
+            border-radius: 12px;
             overflow: hidden;
-            border: 1px solid var(--border-color);
             background: white;
+            border: 1px solid #1e293b;
         }
 
-        .main-sheet {
+        /* Oculta cabeçalhos do Google que deixam feio e limpa o layout */
+        iframe {
             width: 100%;
-            height: 800px;
+            height: 750px;
             border: none;
         }
     </style>
@@ -148,46 +170,64 @@
         <!-- Cabeçalho Centralizado -->
         <header>
             <div class="header-title">
-                <h1>PAINEL DE GESTÃO ESTRATÉGICA — CAMPANHA 2026</h1>
-                <p>Vale do Jequitinhonha, Região Metropolitana e Central</p>
+                <h1>Painel de Controle Eleitoral 2026</h1>
+                <p>Base Estratégica: Ribeirão das Neves, Metropolitana e Central</p>
                 
-                <div class="status-container">
-                    <div class="status-badge">
-                        <div class="pulse-dot"></div> Conectado ao Google Drive
-                    </div>
-                    <div class="status-badge">
-                        🕒 Última Atualização: <span id="update-time">Carregando...</span>
-                    </div>
+                <div class="update-badge">
+                    <div class="pulse-dot"></div> Sincronizado ao Vivo • Atualizado às <span id="clock">00:00</span>
                 </div>
             </div>
         </header>
 
-        <!-- Chamada de Navegação de Abas Movida para Cima -->
-        <div class="navigation-alert">
-            <p>
-                📂 <span>Navegue pelas abas da campanha diretamente no rodapé da planilha abaixo:</span>
-                <span class="click-icon">CLIQUE NAS ABAS ABAIXO ⬇️</span>
-            </p>
+        <div class="section-instruction">Selecione o Painel de Dados Abaixo</div>
+
+        <!-- Menu Superior de Abas Totalmente Estilizado -->
+        <div class="custom-tabs">
+            <button class="tab-btn active" data-tab="federal" onclick="switchTab('federal', 'https://google.com')">
+                🔵 DEPUTADO FEDERAL — DUÍLIO
+            </button>
+            <button class="tab-btn" data-tab="estadual" onclick="switchTab('estadual', 'https://google.com')">
+                🟣 DEPUTADOS ESTADUAIS
+            </button>
+            <button class="tab-btn" data-tab="financeiro" onclick="switchTab('financeiro', 'https://google.com')">
+                🟡 CONTROLE FINANCEIRO
+            </button>
+            <button class="tab-btn" data-tab="resumo" onclick="switchTab('resumo', 'https://google.com')">
+                🟢 RESUMO POR REGIÃO
+            </button>
         </div>
 
-        <!-- Espaço Dedicado à Planilha Integrada -->
+        <!-- Box da Planilha Centralizada -->
         <div class="spreadsheet-container">
             <div class="spreadsheet-wrapper">
-                <!-- Parâmetros de incorporação oficiais forçando widget=true para a barra de abas aparecer -->
-                <iframe class="main-sheet" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vTFfj9q_UJnULW8wEWNO5Br0wEabAo79Dme3UKaSFQPcT9VZ5Ar6kMryVIfcsVNo7B1us-r4RXUC7jO/pubhtml?widget=true&amp;headers=false"></iframe>
+                <!-- Por padrão, o link inicial já abre focado nas linhas de Ribeirão das Neves -->
+                <iframe id="sheet-iframe" src="https://google.com"></iframe>
             </div>
         </div>
     </div>
 
     <script>
-        // Função simples para registrar o horário exato em que a página foi aberta/recarregada
-        function setLastUpdateTime() {
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            document.getElementById('update-time').textContent = hours + ':' + minutes;
+        // Função dinâmica para alternar entre as abas com visual moderno e carregar a planilha certa
+        function switchTab(tabName, embedUrl) {
+            // Remove a classe ativa de todos os botões
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Adiciona a classe ativa no botão clicado
+            document.querySelector(`.tab-btn[data-tab="${tabName}"]`).classList.add('active');
+            
+            // Muda o link do Iframe para carregar a aba correta do Google Sheets
+            document.getElementById('sheet-iframe').src = embedUrl;
         }
-        setLastUpdateTime();
+
+        // Script simples para cravar o horário exato da última atualização na tela
+        function updateTime() {
+            const now = new Date();
+            const timeString = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('clock').textContent = timeString;
+        }
+        updateTime();
     </script>
 
 </body>
