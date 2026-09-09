@@ -4,29 +4,19 @@
     <meta charset="UTF-8">
     <meta http-equiv="refresh" content="300">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Geral de Apuração — Campanha 2026</title>
+    <title>Painel Geral da Campanha</title>
     
     <style>
-        :root {
-            --bg-main: #0f172a; /* Azul escuro corporativo de fundo */
-            --bg-card: #1e293b; /* Fundo dos blocos internos */
-            --border-color: #334155;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --tab-federal: #3b82f6;
-        }
-
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
         }
 
         body {
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            padding: 40px 24px;
+            background-color: #0f172a; /* Fundo escuro elegante */
+            padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -35,98 +25,46 @@
 
         .container {
             width: 100%;
-            max-width: 1200px; /* Garante centralização e proporção perfeita */
+            max-width: 1300px;
             margin: 0 auto;
+            text-align: center;
         }
 
         header {
-            text-align: center;
-            background: linear-gradient(135deg, #1e3a8a, #1d4ed8);
-            padding: 36px;
-            border-radius: 20px;
-            margin-bottom: 32px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .header-title h1 {
-            font-size: 28px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            text-transform: uppercase;
-        }
-
-        .header-title p {
-            font-size: 14px;
-            color: #93c5fd;
-            margin-top: 6px;
-            font-weight: 500;
-        }
-
-        .update-badge {
-            background-color: rgba(0, 0, 0, 0.25);
-            padding: 6px 16px;
-            border-radius: 30px;
-            font-size: 12px;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 16px;
-        }
-
-        .pulse-dot {
-            width: 8px;
-            height: 8px;
-            background-color: #10b981;
-            border-radius: 50%;
-        }
-
-        .section-instruction {
-            text-align: center;
-            font-size: 13px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 12px;
-            font-weight: 700;
-        }
-
-        /* Menu Superior com Indicação Visual das Abas */
-        .custom-tabs {
-            display: grid;
-            grid-template-columns: 1fr;
             margin-bottom: 20px;
+            color: #ffffff;
         }
 
-        .tab-indicator-btn {
-            background-color: var(--tab-federal);
-            border: 1px solid var(--border-color);
-            color: white;
-            padding: 16px 20px;
-            border-radius: 14px;
-            font-size: 14px;
-            font-weight: 700;
-            text-align: center;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        header h1 {
+            font-size: 24px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .spreadsheet-container {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 20px;
+        header p {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        /* Caixa Centralizada da Planilha */
+        .spreadsheet-box {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            padding: 16px;
+            border-radius: 16px;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
         }
 
-        .spreadsheet-wrapper {
+        .wrapper {
             width: 100%;
-            border-radius: 12px;
+            border-radius: 8px;
             overflow: hidden;
-            background: white;
-            border: 1px solid #1e293b;
+            background: #ffffff;
         }
 
+        /* Iframe com a URL purificada e corrigida caractere por caractere */
         iframe {
             width: 100%;
             height: 780px;
@@ -137,44 +75,18 @@
 <body>
 
     <div class="container">
-        <!-- Cabeçalho Centralizado -->
         <header>
-            <div class="header-title">
-                <h1>Painel de Controle Eleitoral 2026</h1>
-                <p>Base Estratégica: Ribeirão das Neves, Metropolitana e Central</p>
-                
-                <div class="update-badge">
-                    <div class="pulse-dot"></div> Sincronizado ao Vivo • Atualizado às <span id="clock">00:00</span>
-                </div>
-            </div>
+            <h1>Painel de Controle Eleitoral 2026</h1>
+            <p>Navegue utilizando as abas originais localizadas no rodapé da planilha</p>
         </header>
 
-        <div class="section-instruction">Navegação do Painel de Controle</div>
-
-        <!-- Indicador Unificado do Painel -->
-        <div class="custom-tabs">
-            <div class="tab-indicator-btn">
-                📊 MATRIZ OPERACIONAL INTEGRADA (NAVEGUE PELAS ABAS NO RODAPÉ DA PLANILHA)
-            </div>
-        </div>
-
-        <!-- Box da Planilha Centralizada com o Link Seguro e Abas Ativas -->
-        <div class="spreadsheet-container">
-            <div class="spreadsheet-wrapper">
-                <!-- A URL abaixo carrega Ribeirão das Neves primeiro e mantém as abas cinzas nativas do Google ativas na parte inferior livre de recusas -->
+        <div class="spreadsheet-box">
+            <div class="wrapper">
+                <!-- URL purificada sem caracteres especiais codificados incorretamente -->
                 <iframe src="https://google.com"></iframe>
             </div>
         </div>
     </div>
-
-    <script>
-        function updateTime() {
-            const now = new Date();
-            const timeString = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
-            document.getElementById('clock').textContent = timeString;
-        }
-        updateTime();
-    </script>
 
 </body>
 </html>
