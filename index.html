@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Painel do Duílio</title>
+<style>
+  :root{
+    --navy:#1F2A5C;
+    --navy-ink:#161E45;
+    --steel:#3D5A99;
+    --bg:#F4F6F9;
+    --card:#FFFFFF;
+    --line:#E2E6ED;
+    --text:#1B1F27;
+    --sub:#6B7280;
+    --green:#2F9E58;
+    --green-bg:#E4F5EA;
+    --amber:#B8790A;
+    --amber-bg:#FCEFD8;
+    --red:#C23B47;
+    --red-bg:#FBE7E8;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-tap-highlight-color:transparent;
+    padding-bottom:40px;
+  }
+  .wrap{max-width:520px;margin:0 auto;}
+
+  /* ---- topo fixo ---- */
+  .top{
+    position:sticky; top:0; z-index:20;
+    background:var(--navy);
+    color:#fff;
+    padding:14px 16px 0 16px;
+  }
+  .top h1{
+    font-size:17px; font-weight:700; margin:0 0 2px 0; letter-spacing:.2px;
+  }
+  .top .sub{font-size:12px; color:#B9C2E0; margin-bottom:10px;}
+
+  .kpis{
+    display:grid; grid-template-columns:1fr 1fr; gap:8px;
+    padding-bottom:12px;
+  }
+  .kpi{
+    background:rgba(255,255,255,.08);
+    border-radius:10px;
+    padding:9px 10px 10px 10px;
+  }
+  .kpi .lbl{font-size:10.5px; color:#C7CFE8; margin-bottom:3px;}
+  .kpi .val{font-size:20px; font-weight:800; line-height:1.05;}
+  .kpi .val small{font-size:12px; font-weight:600; color:#C7CFE8;}
+
+  .progress-wrap{padding:0 16px 12px 16px; background:var(--navy);}
+  .progress-track{
+    height:10px; border-radius:6px; background:rgba(255,255,255,.15); overflow:hidden;
+  }
+  .progress-fill{
+    height:100%; background:#7EE0A8; border-radius:6px;
+    transition:width .35s ease;
+  }
+  .progress-txt{font-size:11px; color:#C7CFE8; margin-top:5px; display:flex; justify-content:space-between;}
+
+  /* ---- abas ---- */
+  .tabs{
+    display:flex; background:var(--card); border-bottom:1px solid var(--line);
+    position:sticky; top:0; z-index:19;
+  }
+  .tabs.stuck{top:0;}
+  .tab-btn{
+    flex:1; border:none; background:none; padding:13px 0; font-size:14px; font-weight:700;
+    color:var(--sub); border-bottom:3px solid transparent;
+  }
+  .tab-btn.active{color:var(--navy); border-bottom-color:var(--navy);}
+
+  .panel{display:none; padding:12px 12px 8px 12px;}
+  .panel.active{display:block;}
+
+  /* ---- acordeao de regiao ---- */
+  .regiao{
+    margin-bottom:10px; border-radius:12px; overflow:hidden;
+    border:1px solid var(--line); background:var(--card);
+  }
+  .regiao-head{
+    width:100%; display:flex; align-items:center; justify-content:space-between;
+    padding:12px 14px; background:#fff; border:none; text-align:left;
+  }
+  .regiao-head .titulo{font-size:14.5px; font-weight:700; color:var(--navy-ink);}
+  .regiao-head .meta-mini{font-size:11.5px; color:var(--sub); margin-top:2px;}
+  .regiao-head .chev{font-size:13px; color:var(--sub); transition:transform .2s ease;}
+  .regiao-head.open .chev{transform:rotate(180deg);}
+  .regiao-bar-track{height:5px; background:var(--line);}
+  .regiao-bar-fill{height:100%; background:var(--steel);}
+
+  .regiao-body{display:none; border-top:1px solid var(--line);}
+  .regiao-body.open{display:block;}
+
+  .item{
+    padding:11px 14px; border-bottom:1px solid var(--line);
+  }
+  .item:last-child{border-bottom:none;}
+  .item-top{display:flex; justify-content:space-between; align-items:baseline; gap:8px;}
+  .item-name{font-size:14px; font-weight:700; color:var(--text);}
+  .item-city{font-size:11.5px; color:var(--sub); margin-top:1px;}
+  .item-pct{font-size:12px; font-weight:700;}
+  .item-pct.ok{color:var(--green);}
+  .item-pct.mid{color:var(--amber);}
+  .item-pct.low{color:var(--red);}
+
+  .fields{display:flex; gap:8px; margin-top:8px;}
+  .field{flex:1;}
+  .field label{display:block; font-size:10.5px; color:var(--sub); margin-bottom:3px; font-weight:600;}
+  .stepper{
+    display:flex; align-items:center; border:1px solid var(--line); border-radius:9px; overflow:hidden; background:#FAFBFC;
+  }
+  .stepper button{
+    width:34px; height:38px; border:none; background:#EEF1F6; font-size:18px; color:var(--navy); font-weight:700;
+  }
+  .stepper button:active{background:#DDE3ED;}
+  .stepper input{
+    flex:1; min-width:0; border:none; background:none; text-align:center; font-size:15px; font-weight:700;
+    color:var(--text); -moz-appearance:textfield; padding:0;
+  }
+  .stepper input::-webkit-outer-spin-button, .stepper input::-webkit-inner-spin-button{
+    -webkit-appearance:none; margin:0;
+  }
+
+  .mini-track{height:4px; background:var(--line); border-radius:3px; margin-top:8px; overflow:hidden;}
+  .mini-fill{height:100%; background:var(--steel);}
+
+  /* ---- financeiro ---- */
+  .fin-summary{
+    display:flex; gap:8px; margin-bottom:10px;
+  }
+  .fin-card{
+    flex:1; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:10px 12px;
+  }
+  .fin-card .lbl{font-size:10.5px; color:var(--sub); font-weight:600;}
+  .fin-card .val{font-size:16px; font-weight:800; color:var(--navy-ink); margin-top:2px;}
+
+  .item-money{display:flex; justify-content:space-between; gap:10px; margin-top:8px; align-items:flex-end;}
+  .money-field{flex:1;}
+  .money-field label{display:block; font-size:10.5px; color:var(--sub); margin-bottom:3px; font-weight:600;}
+  .money-readonly{
+    font-size:14px; font-weight:700; color:var(--sub); padding:8px 10px; background:#F1F3F7; border-radius:9px;
+  }
+  .money-input{
+    width:100%; font-size:14px; font-weight:700; color:var(--text); padding:8px 10px;
+    border:1px solid var(--line); border-radius:9px; background:#FAFBFC;
+  }
+  .status-row{display:flex; gap:6px; margin-top:9px;}
+  .status-btn{
+    flex:1; padding:7px 0; border-radius:8px; font-size:12px; font-weight:700; border:1.5px solid var(--line); background:#fff; color:var(--sub);
+  }
+  .status-btn.sel-pendente{background:var(--red-bg); border-color:var(--red); color:var(--red);}
+  .status-btn.sel-parcial{background:var(--amber-bg); border-color:var(--amber); color:var(--amber);}
+  .status-btn.sel-pago{background:var(--green-bg); border-color:var(--green); color:var(--green);}
+
+  .obs{font-size:11.5px; color:var(--sub); margin-top:7px; font-style:italic;}
+
+  .footer-note{
+    text-align:center; font-size:11.5px; color:var(--sub); padding:16px 24px 4px 24px;
+  }
+  .reset-btn{
+    display:block; margin:6px auto 0 auto; background:none; border:none; color:var(--steel); font-size:12.5px; font-weight:700; text-decoration:underline; padding:6px;
+  }
+  .saved-toast{
+    position:fixed; bottom:16px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--navy-ink); color:#fff; padding:8px 16px; border-radius:20px; font-size:12.5px; font-weight:600;
+    opacity:0; transition:opacity .25s ease, transform .25s ease; pointer-events:none; z-index:50;
+  }
+  .saved-toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <h1>Painel do Duílio — Federal</h1>
+    <div class="sub">Vale do Jequitinhonha e Região Metropolitana</div>
+    <div class="kpis">
+      <div class="kpi"><div class="lbl">Meta de votos</div><div class="val" id="kpiMeta">—</div></div>
+      <div class="kpi"><div class="lbl">Garantidos</div><div class="val" id="kpiGarantido">—</div></div>
+      <div class="kpi"><div class="lbl">Faltam</div><div class="val" id="kpiFaltam">—</div></div>
+      <div class="kpi"><div class="lbl">Investido</div><div class="val" id="kpiInvestido">—</div></div>
+    </div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="progress-txt"><span id="progressPct">0% da meta</span><span id="progressLideres">0 lideranças</span></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="votos">Votos</button>
+    <button class="tab-btn" data-tab="financeiro">Financeiro</button>
+  </div>
+
+  <div class="panel active" id="panel-votos"></div>
+  <div class="panel" id="panel-financeiro"></div>
+
+  <div class="footer-note">
+    Os dados ficam salvos automaticamente neste dispositivo.
+    <button class="reset-btn" id="resetBtn">Restaurar dados originais</button>
+  </div>
+</div>
+
+<div class="saved-toast" id="toast">Salvo</div>
+
+<script>
+// ---------------- DADOS PADRÃO ----------------
+const VOTOS_PADRAO = [
+  ["Vale do Jequitinhonha","Araçuaí",34807,"A definir",0,0],
+  ["Vale do Jequitinhonha","Itinga",12569,"A definir",0,0],
+  ["Vale do Jequitinhonha","Novo Cruzeiro",26850,"A definir",0,0],
+  ["Vale do Jequitinhonha","Coronel Murta",8128,"A definir",0,0],
+  ["Vale do Jequitinhonha","Virgem da Lapa",11513,"A definir",0,0],
+  ["Vale do Jequitinhonha","Francisco Badaró",8795,"A definir",0,0],
+  ["Vale do Jequitinhonha","Leme do Prado",4312,"A definir",0,0],
+  ["Vale do Jequitinhonha","Genipapo de Minas",6000,"A definir",0,0],
+  ["Vale do Jequitinhonha","Itaobim",19025,"A definir",0,0],
+  ["Vale do Jequitinhonha","Ponto dos Volantes",10584,"A definir",0,0],
+  ["Vale do Jequitinhonha","Setubinha",9797,"A definir",0,0],
+  ["Vale do Jequitinhonha","Caraí",19251,"A definir",0,0],
+  ["Vale do Jequitinhonha","Teófilo Otoni",142030,"A definir",0,0],
+  ["Metropolitana","Ribeirão das Neves",327968,"Pastor Glaucon / Ana Silva + ACS",0,0],
+  ["Metropolitana","Ribeirão das Neves",327968,"Edmilson",100,150],
+  ["Metropolitana","Ribeirão das Neves",327968,"Baiano",50,80],
+  ["Metropolitana","Ribeirão das Neves",327968,"Leandrinho",50,80],
+  ["Metropolitana","Ribeirão das Neves",327968,"Dinho",100,150],
+  ["Metropolitana","Ribeirão das Neves",327968,"Apae",300,400],
+  ["Metropolitana","Ribeirão das Neves",327968,"Eliete",50,80],
+  ["Metropolitana","Ribeirão das Neves",327968,"Ludmila Apae",50,80],
+  ["Metropolitana","Ribeirão das Neves",327968,"Thiaguinho",50,80],
+  ["Metropolitana","Ribeirão das Neves",327968,"Fátima",50,80],
+  ["Metropolitana","Ribeirão das Neves",327968,"Ademir",20,30],
+  ["Metropolitana","Ribeirão das Neves",327968,"Brenda",20,30],
+  ["Metropolitana","Ribeirão das Neves",327968,"Ana Silvia",300,400],
+  ["Metropolitana","Ribeirão das Neves",327968,"Zé Roberto",20,30],
+  ["Metropolitana","Ribeirão das Neves",327968,"Emerson (Neviana)",100,150],
+  ["Metropolitana","Ribeirão das Neves",327968,"Balalau",20,30],
+  ["Metropolitana","Ribeirão das Neves",327968,"Emerson",50,80],
+  ["Metropolitana","Ribeirão das Neves",327968,"Vanderlei",50,80],
+  ["Metropolitana","Ribeirão das Neves",327968,"Luana / Igor",100,150],
+  ["Metropolitana","Ribeirão das Neves",327968,"Dê",50,80],
+  ["Metropolitana","Ribeirão das Neves",327968,"Bambu",30,50],
+  ["Metropolitana","Ribeirão das Neves",327968,"Lidiane",50,80],
+  ["Metropolitana","Ribeirão das Neves",327968,"Martins e Vila Cacique (bairro)",200,250],
+  ["Metropolitana","Esmeraldas",102608,"José Roberto (Amigo do Dinho)",0,0],
+  ["Metropolitana","Ibirité",181943,"A definir",0,0],
+  ["Central","Curvelo",82335,"Salomão / grupo de apoio",0,0]
+].map((r,i)=>({id:"v"+i, regiao:r[0], cidade:r[1], populacao:r[2], lideranca:r[3], garantido:r[4], meta:r[5]}));
+
+const FIN_PADRAO = [
+  ["Metropolitana","Ribeirão das Neves (Justinópolis)","Ademir","Liderança de bairro",500,""],
+  ["Metropolitana","Ribeirão das Neves (Metropolitano)","Baiano","Liderança de bairro",5000,""],
+  ["Metropolitana","Ribeirão das Neves (Metropolitano)","Erica","Liderança de bairro",5000,""],
+  ["Metropolitana","Ribeirão das Neves","Balu","Liderança de bairro",2500,""],
+  ["Metropolitana","Ribeirão das Neves","Marquinho","Liderança de bairro",2500,""],
+  ["Metropolitana","Ribeirão das Neves","Marcelo (churrasqueiro)","Liderança de bairro",2500,""],
+  ["Metropolitana","Ribeirão das Neves (San Genaro)","Fátima","Liderança de bairro",4000,""],
+  ["Metropolitana","Ribeirão das Neves (Centro de Neves)","Júnior Ong","Liderança de bairro",2000,""],
+  ["Metropolitana","Ribeirão das Neves (Colonial)","Emerson","Liderança de bairro",3000,""],
+  ["Metropolitana","Ribeirão das Neves","Viviane (Igreja)","Liderança religiosa",3000,""],
+  ["Metropolitana","Ribeirão das Neves (Colonial)","Leandrinho","Liderança de bairro",9000,""],
+  ["Metropolitana","Ribeirão das Neves (Colonial)","Emerson (+ 4 pessoas a 1.500)","Liderança de bairro",15000,"9.000 + 4 pessoas a 1.500 cada"],
+  ["Metropolitana","Ribeirão das Neves (Alterosa)","Adenilse (+ 2 pessoas a 3.000)","Liderança de bairro",11000,"5.000 + 2 pessoas a 3.000 cada"],
+  ["Metropolitana","Ribeirão das Neves (Colonial)","Eliete","Liderança de bairro",3000,""],
+  ["Metropolitana","Ribeirão das Neves","João (8 pessoas a 1.000)","Equipe de apoio",8000,""],
+  ["Metropolitana","Ribeirão das Neves (Veneza)","Dinho","Liderança de bairro",3000,""],
+  ["Metropolitana","Ribeirão das Neves (Vila Hortinha)","Valdeci","Liderança de bairro",1500,""],
+  ["Metropolitana","Ribeirão das Neves (Centro de Neves)","Tiaguinho","Liderança de bairro",1500,""],
+  ["Metropolitana","Ribeirão das Neves","Ana Silva (+ 22 ACS a 1.000)","Liderança / ACS",25000,"3.000 + 22 pessoas a 1.000 cada"],
+  ["Metropolitana","Ribeirão das Neves (Veneza)","Jeré","Liderança de bairro",10000,""],
+  ["Metropolitana","Ribeirão das Neves","Eufrain","Liderança de bairro",2000,""],
+  ["Metropolitana","Ribeirão das Neves","Léo do Posto","Liderança de bairro",10000,""],
+  ["Metropolitana","Ribeirão das Neves","3 carros de apoio","Logística / Transporte",30000,"3 carros a 10.000 cada"],
+  ["Metropolitana","Ribeirão das Neves","Motorista","Logística / Transporte",2000,"+ ajuda de almoço (valor a definir)"],
+  ["Central","Curvelo","Salomão e grupo de visita","Liderança / Visita",0,"Orçamento de 15.000 a 20.000 — falta definir valor final"],
+  ["Metropolitana","Ibirité","A definir","Liderança de bairro",0,"Falta nome da liderança e valor"],
+  ["Metropolitana","Esmeraldas","José Roberto (Amigo do Dinho)","Liderança de bairro",0,"Valor a definir"]
+].map((r,i)=>({id:"f"+i, regiao:r[0], cidade:r[1], pessoa:r[2], categoria:r[3], orcado:r[4], pago:0, status:"Pendente", obs:r[5]}));
+
+const REGIOES = ["Vale do Jequitinhonha","Metropolitana","Central"];
+
+let votos = [];
+let financeiro = [];
+let openRegioes = {votos:{}, financeiro:{}};
+let saveTimer = null;
+
+function fmtN(n){ return Math.round(n).toLocaleString('pt-BR'); }
+function fmtR(n){ return "R$ " + Math.round(n).toLocaleString('pt-BR'); }
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg || "Salvo";
+  t.classList.add('show');
+  clearTimeout(t._h);
+  t._h = setTimeout(()=>t.classList.remove('show'), 1000);
+}
+
+function scheduleSave(kind){
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(async ()=>{
+    try{
+      if(kind==='votos'){
+        await window.storage.set('duilio-votos', JSON.stringify(votos), false);
+      } else {
+        await window.storage.set('duilio-financeiro', JSON.stringify(financeiro), false);
+      }
+      showToast('Salvo');
+    }catch(e){ console.error('Erro ao salvar', e); showToast('Erro ao salvar'); }
+  }, 450);
+}
+
+async function loadData(){
+  try{
+    const r = await window.storage.get('duilio-votos', false);
+    votos = r && r.value ? JSON.parse(r.value) : JSON.parse(JSON.stringify(VOTOS_PADRAO));
+  }catch(e){ votos = JSON.parse(JSON.stringify(VOTOS_PADRAO)); }
+  try{
+    const r2 = await window.storage.get('duilio-financeiro', false);
+    financeiro = r2 && r2.value ? JSON.parse(r2.value) : JSON.parse(JSON.stringify(FIN_PADRAO));
+  }catch(e){ financeiro = JSON.parse(JSON.stringify(FIN_PADRAO)); }
+  REGIOES.forEach(r=>{ openRegioes.votos[r] = false; openRegioes.financeiro[r] = false; });
+  openRegioes.votos[REGIOES[0]] = true;
+  openRegioes.financeiro[REGIOES[1]] = true;
+}
+
+function pctClass(p){
+  if(p>=0.66) return 'ok';
+  if(p>=0.33) return 'mid';
+  return 'low';
+}
+
+function renderKPIs(){
+  const meta = votos.reduce((s,v)=>s+Number(v.meta||0),0);
+  const gar = votos.reduce((s,v)=>s+Number(v.garantido||0),0);
+  const orcado = financeiro.reduce((s,f)=>s+Number(f.orcado||0),0);
+  const pago = financeiro.reduce((s,f)=>s+Number(f.pago||0),0);
+  const pct = meta>0 ? gar/meta : 0;
+  document.getElementById('kpiMeta').innerHTML = fmtN(meta);
+  document.getElementById('kpiGarantido').innerHTML = fmtN(gar);
+  document.getElementById('kpiFaltam').innerHTML = fmtN(Math.max(meta-gar,0));
+  document.getElementById('kpiInvestido').innerHTML = fmtR(orcado) + ' <small>/ ' + fmtR(pago) + ' pago</small>';
+  document.getElementById('progressFill').style.width = Math.min(pct*100,100)+'%';
+  document.getElementById('progressPct').textContent = (pct*100).toFixed(1)+'% da meta atingida';
+  const nLideres = votos.filter(v=>v.lideranca!=='A definir' && Number(v.garantido)>0).length;
+  document.getElementById('progressLideres').textContent = nLideres + ' lideranças entregando';
+}
+
+function renderVotos(){
+  const cont = document.getElementById('panel-votos');
+  cont.innerHTML = '';
+  REGIOES.forEach(regiao=>{
+    const itens = votos.filter(v=>v.regiao===regiao);
+    if(itens.length===0) return;
+    const metaR = itens.reduce((s,v)=>s+Number(v.meta||0),0);
+    const garR = itens.reduce((s,v)=>s+Number(v.garantido||0),0);
+    const pctR = metaR>0 ? garR/metaR : 0;
+    const isOpen = openRegioes.votos[regiao];
+
+    const box = document.createElement('div');
+    box.className = 'regiao';
+    box.innerHTML = `
+      <button class="regiao-head ${isOpen?'open':''}" data-regiao="${regiao}">
+        <div>
+          <div class="titulo">${regiao}</div>
+          <div class="meta-mini">${fmtN(garR)} de ${fmtN(metaR)} votos · ${(pctR*100).toFixed(0)}%</div>
+        </div>
+        <div class="chev">▾</div>
+      </button>
+      <div class="regiao-bar-track"><div class="regiao-bar-fill" style="width:${Math.min(pctR*100,100)}%"></div></div>
+      <div class="regiao-body ${isOpen?'open':''}" id="body-votos-${regiao.replace(/\\s+/g,'_')}"></div>
+    `;
+    cont.appendChild(box);
+
+    const body = box.querySelector('.regiao-body');
+    itens.forEach(v=>{
+      const pct = v.meta>0 ? v.garantido/v.meta : 0;
+      const row = document.createElement('div');
+      row.className = 'item';
+      row.innerHTML = `
+        <div class="item-top">
+          <div>
+            <div class="item-name">${v.lideranca}</div>
+            <div class="item-city">${v.cidade} · pop. ${fmtN(v.populacao)}</div>
+          </div>
+          <div class="item-pct ${pctClass(pct)}">${v.meta>0 ? (pct*100).toFixed(0)+'%' : '—'}</div>
+        </div>
+        <div class="fields">
+          <div class="field">
+            <label>Garantidos</label>
+            <div class="stepper">
+              <button data-act="dec-g">–</button>
+              <input type="number" inputmode="numeric" data-field="garantido" value="${v.garantido}">
+              <button data-act="inc-g">+</button>
+            </div>
+          </div>
+          <div class="field">
+            <label>Meta</label>
+            <div class="stepper">
+              <button data-act="dec-m">–</button>
+              <input type="number" inputmode="numeric" data-field="meta" value="${v.meta}">
+              <button data-act="inc-m">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="mini-track"><div class="mini-fill" style="width:${Math.min(pct*100,100)}%"></div></div>
+      `;
+      body.appendChild(row);
+
+      const inpG = row.querySelector('input[data-field="garantido"]');
+      const inpM = row.querySelector('input[data-field="meta"]');
+      function update(){
+        v.garantido = Math.max(0, Number(inpG.value||0));
+        v.meta = Math.max(0, Number(inpM.value||0));
+        scheduleSave('votos');
+        renderKPIs();
+        renderVotos();
+      }
+      inpG.addEventListener('change', update);
+      inpM.addEventListener('change', update);
+      row.querySelector('[data-act="dec-g"]').addEventListener('click', ()=>{ inpG.value = Math.max(0,Number(inpG.value||0)-10); update(); });
+      row.querySelector('[data-act="inc-g"]').addEventListener('click', ()=>{ inpG.value = Number(inpG.value||0)+10; update(); });
+      row.querySelector('[data-act="dec-m"]').addEventListener('click', ()=>{ inpM.value = Math.max(0,Number(inpM.value||0)-10); update(); });
+      row.querySelector('[data-act="inc-m"]').addEventListener('click', ()=>{ inpM.value = Number(inpM.value||0)+10; update(); });
+    });
+
+    box.querySelector('.regiao-head').addEventListener('click', ()=>{
+      openRegioes.votos[regiao] = !openRegioes.votos[regiao];
+      renderVotos();
+    });
+  });
+}
+
+function renderFinanceiro(){
+  const cont = document.getElementById('panel-financeiro');
+  cont.innerHTML = '';
+
+  const orcadoT = financeiro.reduce((s,f)=>s+Number(f.orcado||0),0);
+  const pagoT = financeiro.reduce((s,f)=>s+Number(f.pago||0),0);
+  const summary = document.createElement('div');
+  summary.className = 'fin-summary';
+  summary.innerHTML = `
+    <div class="fin-card"><div class="lbl">Orçado</div><div class="val">${fmtR(orcadoT)}</div></div>
+    <div class="fin-card"><div class="lbl">Pago</div><div class="val">${fmtR(pagoT)}</div></div>
+    <div class="fin-card"><div class="lbl">Saldo</div><div class="val">${fmtR(orcadoT-pagoT)}</div></div>
+  `;
+  cont.appendChild(summary);
+
+  REGIOES.forEach(regiao=>{
+    const itens = financeiro.filter(f=>f.regiao===regiao);
+    if(itens.length===0) return;
+    const orcR = itens.reduce((s,f)=>s+Number(f.orcado||0),0);
+    const pagR = itens.reduce((s,f)=>s+Number(f.pago||0),0);
+    const pctR = orcR>0 ? pagR/orcR : 0;
+    const isOpen = openRegioes.financeiro[regiao];
+
+    const box = document.createElement('div');
+    box.className = 'regiao';
+    box.innerHTML = `
+      <button class="regiao-head ${isOpen?'open':''}" data-regiao="${regiao}">
+        <div>
+          <div class="titulo">${regiao}</div>
+          <div class="meta-mini">${fmtR(pagR)} pago de ${fmtR(orcR)}</div>
+        </div>
+        <div class="chev">▾</div>
+      </button>
+      <div class="regiao-bar-track"><div class="regiao-bar-fill" style="width:${Math.min(pctR*100,100)}%"></div></div>
+      <div class="regiao-body ${isOpen?'open':''}"></div>
+    `;
+    cont.appendChild(box);
+
+    const body = box.querySelector('.regiao-body');
+    itens.forEach(f=>{
+      const row = document.createElement('div');
+      row.className = 'item';
+      row.innerHTML = `
+        <div class="item-top">
+          <div>
+            <div class="item-name">${f.pessoa}</div>
+            <div class="item-city">${f.cidade} · ${f.categoria}</div>
+          </div>
+        </div>
+        <div class="item-money">
+          <div class="money-field">
+            <label>Orçado</label>
+            <div class="money-readonly">${fmtR(f.orcado)}</div>
+          </div>
+          <div class="money-field">
+            <label>Pago</label>
+            <input class="money-input" type="number" inputmode="numeric" data-field="pago" value="${f.pago}">
+          </div>
+        </div>
+        <div class="status-row">
+          <button class="status-btn" data-status="Pendente">Pendente</button>
+          <button class="status-btn" data-status="Parcial">Parcial</button>
+          <button class="status-btn" data-status="Pago">Pago</button>
+        </div>
+        ${f.obs ? `<div class="obs">${f.obs}</div>` : ''}
+      `;
+      body.appendChild(row);
+
+      row.querySelectorAll('.status-btn').forEach(btn=>{
+        if(btn.dataset.status===f.status) btn.classList.add('sel-'+f.status.toLowerCase());
+        btn.addEventListener('click', ()=>{
+          f.status = btn.dataset.status;
+          scheduleSave('financeiro');
+          renderFinanceiro();
+        });
+      });
+
+      const inpPago = row.querySelector('input[data-field="pago"]');
+      inpPago.addEventListener('change', ()=>{
+        f.pago = Math.max(0, Number(inpPago.value||0));
+        scheduleSave('financeiro');
+        renderKPIs();
+        renderFinanceiro();
+      });
+    });
+
+    box.querySelector('.regiao-head').addEventListener('click', ()=>{
+      openRegioes.financeiro[regiao] = !openRegioes.financeiro[regiao];
+      renderFinanceiro();
+    });
+  });
+}
+
+function renderAll(){
+  renderKPIs();
+  renderVotos();
+  renderFinanceiro();
+}
+
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+document.getElementById('resetBtn').addEventListener('click', async ()=>{
+  if(!confirm('Isso vai apagar suas edições e voltar aos dados originais. Continuar?')) return;
+  votos = JSON.parse(JSON.stringify(VOTOS_PADRAO));
+  financeiro = JSON.parse(JSON.stringify(FIN_PADRAO));
+  try{
+    await window.storage.set('duilio-votos', JSON.stringify(votos), false);
+    await window.storage.set('duilio-financeiro', JSON.stringify(financeiro), false);
+  }catch(e){}
+  renderAll();
+  showToast('Restaurado');
+});
+
+(async function init(){
+  await loadData();
+  renderAll();
+})();
+</script>
+</body>
+</html>
