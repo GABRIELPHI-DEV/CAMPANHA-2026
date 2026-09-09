@@ -4,17 +4,17 @@
     <meta charset="UTF-8">
     <meta http-equiv="refresh" content="300">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Estratégico — Campanha 2026</title>
+    <title>Painel Geral de Apuração — Campanha 2026</title>
     
     <style>
         :root {
-            --bg-main: #0b0f19;
-            --bg-card: #131a2c;
-            --border-color: #1f2c4d;
-            --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
-            --federal-color: #3b82f6;
-            --estadual-color: #a855f7;
+            --bg-main: #f8fafc;
+            --bg-card: #ffffff;
+            --border-color: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary: #1e3a8a;
+            --primary-light: #3b82f6;
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
@@ -24,7 +24,7 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
@@ -34,17 +34,18 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
-        /* Topo */
+        /* Topo Institucional */
         header {
-            margin-bottom: 24px;
-            background: linear-gradient(135deg, #1e293b, #0f172a);
-            padding: 24px;
+            background: linear-gradient(135deg, var(--primary), #1d4ed8);
+            padding: 28px;
             border-radius: 16px;
-            border: 1px solid var(--border-color);
+            color: white;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -53,29 +54,29 @@
         }
 
         .header-title h1 {
-            font-size: 24px;
+            font-size: 26px;
             font-weight: 800;
-            color: #ffffff;
+            letter-spacing: -0.5px;
         }
 
         .header-title p {
             font-size: 14px;
-            color: var(--text-muted);
+            opacity: 0.9;
             margin-top: 4px;
         }
 
         .live-badge {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 30px;
             font-size: 12px;
             font-weight: 700;
-            color: var(--success);
-            background-color: rgba(16, 185, 129, 0.1);
-            padding: 6px 12px;
-            border-radius: 20px;
-            border: 1px solid rgba(16, 185, 129, 0.2);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        /* Cards Principais */
-        .metrics-grid {
+        /* Resumo das Metas Gerais */
+        .metrics-row {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
@@ -85,8 +86,9 @@
         .metric-card {
             background-color: var(--bg-card);
             border: 1px solid var(--border-color);
-            padding: 20px;
+            padding: 24px;
             border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
         .metric-title {
@@ -94,113 +96,93 @@
             font-weight: 700;
             text-transform: uppercase;
             color: var(--text-muted);
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
         }
 
         .metric-value {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: 800;
-            color: #ffffff;
-            margin-bottom: 10px;
+            color: var(--primary);
+            margin-bottom: 12px;
         }
 
-        .progress-container {
-            width: 100%;
-            background-color: #1e293b;
-            height: 6px;
+        .progress-bar-bg {
+            background-color: #f1f5f9;
+            height: 8px;
             border-radius: 4px;
             overflow: hidden;
             margin-bottom: 8px;
         }
 
-        .progress-bar {
+        .progress-bar-fill {
             height: 100%;
+            border-radius: 4px;
         }
 
         .metric-footer {
             font-size: 12px;
-            color: var(--text-muted);
             display: flex;
             justify-content: space-between;
+            color: var(--text-muted);
         }
 
-        /* Bloco do Mapa (Empilhado verticalmente para forçar a aparição) */
-        .map-section {
+        /* Divisão Lateral: Mapa + Regiões */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 450px;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+        }
+
+        .panel-card {
             background-color: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 24px;
-            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
 
-        .section-title {
+        .panel-title {
             font-size: 16px;
             font-weight: 700;
             margin-bottom: 16px;
-            color: #ffffff;
-            border-left: 4px solid var(--federal-color);
-            padding-left: 10px;
-        }
-
-        .map-box {
-            background: #0f172a;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            padding: 20px;
+            color: var(--primary);
             display: flex;
-            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            min-height: 300px;
-            position: relative;
+            gap: 8px;
         }
 
-        .map-svg {
+        /* Mapa Real de Minas Gerais Exibido Via Iframe Dedicado */
+        .map-wrapper {
             width: 100%;
-            max-width: 450px;
-            height: auto;
-        }
-
-        /* Tags do Mapa */
-        .map-label {
-            position: absolute;
-            background: rgba(11, 15, 25, 0.95);
-            border: 1px solid var(--border-color);
-            padding: 6px 10px;
-            border-radius: 8px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-        .lbl-jequitinhonha { top: 15%; right: 25%; border-right: 3px solid var(--danger); }
-        .lbl-central { top: 45%; left: 25%; border-left: 3px solid var(--warning); }
-        .lbl-metropolitana { bottom: 25%; left: 45%; border-left: 3px solid var(--success); }
-
-        /* Bloco de Performance Regional */
-        .regions-section {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 24px;
-        }
-
-        .regions-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 16px;
-        }
-
-        .region-card {
-            background: #1e293b;
-            padding: 16px;
+            height: 380px;
             border-radius: 12px;
-            border-top: 4px solid #fff;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background-color: #e5e7eb;
         }
-        .reg-metropolitana { border-top-color: var(--success); }
-        .reg-central { border-top-color: var(--warning); }
-        .reg-jequitinhonha { border-top-color: var(--danger); }
 
-        .region-head {
+        .map-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Listagem de Performance Regional */
+        .region-item {
+            background-color: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .region-header {
             display: flex;
             justify-content: space-between;
             font-weight: 700;
@@ -208,33 +190,34 @@
             margin-bottom: 8px;
         }
 
-        .region-body {
+        .region-meta {
             font-size: 12px;
             color: var(--text-muted);
             display: flex;
             justify-content: space-between;
         }
 
-        /* Bloco da Planilha */
-        .spreadsheet-section {
+        /* Central da Planilha com Todas as Abas Habilitadas */
+        .spreadsheet-container {
             background-color: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 50px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
         }
 
-        .iframe-wrapper {
+        .spreadsheet-wrapper {
             width: 100%;
-            overflow-x: auto;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
             background: white;
-            border-radius: 8px;
             margin-top: 12px;
         }
 
-        iframe {
+        .main-sheet {
             width: 100%;
-            height: 650px;
+            height: 750px;
             border: none;
         }
     </style>
@@ -242,62 +225,84 @@
 <body>
 
     <div class="container">
-        <!-- Header -->
+        <!-- Cabeçalho -->
         <header>
             <div class="header-title">
-                <h1>SISTEMA ESTRATÉGICO DE APURAÇÃO 2026</h1>
-                <p>Monitoramento Geopolítico Integrado — Vale do Jequitinhonha, Metropolitana e Central</p>
+                <h1>PAINEL ESTRATÉGICO DE CAMPANHA 2026</h1>
+                <p>Análise e Monitoramento de Metas — Vale do Jequitinhonha, Metropolitana e Central</p>
             </div>
-            <div class="live-badge">Painel Sincronizado com o Excel</div>
+            <div class="live-badge">Sincronizado com Google Planilhas</div>
         </header>
 
-        <!-- Cards de Métricas -->
-        <div class="metrics-grid">
+        <!-- Indicadores Numéricos -->
+        <div class="metrics-row">
             <div class="metric-card">
-                <div class="metric-title">Votos Garantidos (Federal)</div>
+                <div class="metric-title">Votos Garantidos — Federal (Duílio)</div>
                 <div class="metric-value">1.810</div>
-                <div class="progress-container">
-                    <div class="progress-bar" style="width: 69.1%; background-color: var(--federal-color);"></div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" style="width: 69.1%; background-color: var(--primary-light);"></div>
                 </div>
                 <div class="metric-footer">
-                    <span>Meta: 2.620</span>
-                    <span style="color: var(--federal-color); font-weight: bold;">69.1% Atingido</span>
+                    <span>Meta Geral: 2.620</span>
+                    <span style="font-weight: 700; color: var(--primary-light);">69.1% Concluído</span>
                 </div>
             </div>
 
             <div class="metric-card">
-                <div class="metric-title">Votos Garantidos (Estaduais)</div>
+                <div class="metric-title">Votos Garantidos — Estaduais (Soma)</div>
                 <div class="metric-value">3.010</div>
-                <div class="progress-container">
-                    <div class="progress-bar" style="width: 67.2%; background-color: var(--estadual-color);"></div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" style="width: 67.2%; background-color: var(--success);"></div>
                 </div>
                 <div class="metric-footer">
-                    <span>Meta: 4.480</span>
-                    <span style="color: var(--estadual-color); font-weight: bold;">67.2% Atingido</span>
+                    <span>Meta Geral: 4.480</span>
+                    <span style="font-weight: 700; color: var(--success);">67.2% Concluído</span>
                 </div>
             </div>
 
             <div class="metric-card">
-                <div class="metric-title">Orçamento Alocado</div>
+                <div class="metric-title">Orçamento Total Alocado</div>
                 <div class="metric-value">R$ 161.000</div>
-                <div class="progress-container">
-                    <div class="progress-bar" style="width: 100%; background-color: var(--warning);"></div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" style="width: 100%; background-color: var(--warning);"></div>
                 </div>
                 <div class="metric-footer">
-                    <span>Pago Total: R$ 0</span>
-                    <span style="color: var(--warning);">Lideranças e Logística</span>
+                    <span>Total Pago: R$ 0</span>
+                    <span style="color: var(--warning); font-weight: 700;">Lideranças e Logística</span>
                 </div>
             </div>
         </div>
 
-        <!-- Bloco do Mapa -->
-        <div class="map-section">
-            <div class="section-title">Mapa de Distribuição e Calor Eleitoral (MG)</div>
-            <div class="map-box">
-                <svg class="map-svg" viewBox="0 0 500 400" xmlns="http://w3.org">
-                    <path d="M150,110 L220,70 L290,60 L360,90 L380,140 L410,180 L390,240 L330,280 L290,330 L220,340 L160,320 L110,250 L80,190 L110,140 Z" fill="#161f38" stroke="#2e3f6e" stroke-width="2" />
-                    <path d="M260,75 L310,65 L355,92 L365,130 L320,160 L270,130 Z" fill="rgba(239, 68, 110, 0.15)" stroke="var(--danger)" stroke-width="1.5" stroke-dasharray="4" />
-                    <path d="M200,160 L260,140 L280,190 L220,210 Z" fill="rgba(245, 158, 11, 0.15)" stroke="var(--warning)" stroke-width="1.5" />
-                    <path d="M230,220 L290,200 L320,250 L250,270 Z" fill="rgba(16, 185, 129, 0.2)" stroke="var(--success)" stroke-width="2" />
-                </svg>
-                <div class="map-label lbl-jequitinhonha">
+        <!-- Área Geográfica e Performance -->
+        <div class="dashboard-grid">
+            <!-- Coluna do Mapa Político Real -->
+            <div class="panel-card">
+                <div class="panel-title">Distribuição Geopolítica de Minas Gerais</div>
+                <div class="map-wrapper">
+                    <!-- Mapa geográfico interativo focado no estado de Minas Gerais -->
+                    <iframe class="map-iframe" src="https://google.com"></iframe>
+                </div>
+            </div>
+
+            <!-- Coluna de Desempenho Regional -->
+            <div class="panel-card">
+                <div class="panel-title">Performance Consolidada por Região</div>
+                
+                <div class="region-item" style="border-left: 4px solid var(--success);">
+                    <div class="region-header">
+                        <span>Região Metropolitana</span>
+                        <span style="color: var(--success);">69.1%</span>
+                    </div>
+                    <div class="region-meta">
+                        <span>Federal: <strong>1.810</strong> / 2.620</span>
+                        <span>Estadual: <strong>1.510</strong> / 1.980</span>
+                    </div>
+                </div>
+
+                <div class="region-item" style="border-left: 4px solid var(--warning);">
+                    <div class="region-header">
+                        <span>Região Central (Curvelo)</span>
+                        <span style="color: var(--warning);">60.0%</span>
+                    </div>
+                    <div class="region-meta">
+                        <span>Federal: <strong>0</strong> / 0</span>
