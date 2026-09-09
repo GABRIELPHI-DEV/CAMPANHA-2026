@@ -1,656 +1,348 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Painel Geral de Apuração — Campanha 2026</title>
-<style>
-  :root{
-    --bg-main:#0f172a;
-    --bg-card:#1e293b;
-    --bg-item:#141b2d;
-    --border-color:#334155;
-    --text-main:#f8fafc;
-    --text-muted:#94a3b8;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Tático Eleitoral MG & Lideranças Regionais</title>
+    <style>
+        :root {
+            --primary: #1B365D;
+            --secondary: #2B547E;
+            --accent-pedro: #1E3A8A;
+            --accent-neilando: #047857;
+            --accent-vitorio: #B91C1C;
+            --bg-light: #F8FAFC;
+            --border-color: #CBD5E1;
+        }
 
-    --tab-federal:#3b82f6;
-    --tab-estadual:#a855f7;
-    --tab-financeiro:#eab308;
-    --tab-resumo:#10b981;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #F1F5F9;
+            color: #1E293B;
+        }
 
-    --green:#10b981;   --green-bg:rgba(16,185,129,.15);
-    --amber:#eab308;   --amber-bg:rgba(234,179,8,.15);
-    --red:#ef4444;     --red-bg:rgba(239,68,68,.15);
-  }
-  *{box-sizing:border-box; margin:0; padding:0;}
-  body{
-    background:var(--bg-main); color:var(--text-main);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    -webkit-tap-highlight-color:transparent;
-    padding:16px 12px 40px 12px;
-  }
-  .container{max-width:720px; margin:0 auto;}
+        .header {
+            background-color: var(--primary);
+            color: white;
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
 
-  header{
-    text-align:center;
-    background:linear-gradient(135deg,#1e3a8a,#1d4ed8);
-    padding:22px 18px;
-    border-radius:18px;
-    margin-bottom:16px;
-    border:1px solid rgba(255,255,255,.1);
-  }
-  header h1{font-size:19px; font-weight:800; letter-spacing:-.2px;}
-  header p{font-size:12.5px; color:#93c5fd; margin-top:5px; font-weight:500;}
-  .update-badge{
-    background:rgba(0,0,0,.25); padding:5px 13px; border-radius:30px; font-size:11px; font-weight:600;
-    display:inline-flex; align-items:center; gap:7px; margin-top:12px; border:1px solid rgba(255,255,255,.05);
-  }
-  .pulse-dot{width:7px; height:7px; background:var(--green); border-radius:50%;}
+        .header h1 {
+            margin: 0 0 8px 0;
+            font-size: 24px;
+        }
 
-  .section-instruction{
-    text-align:center; font-size:11px; color:var(--text-muted); text-transform:uppercase;
-    letter-spacing:1.2px; margin-bottom:10px; font-weight:700;
-  }
+        .header p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 14px;
+        }
 
-  .custom-tabs{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px;}
-  .tab-btn{
-    background:var(--bg-card); border:1px solid var(--border-color); color:var(--text-main);
-    padding:13px 10px; border-radius:12px; font-size:12.5px; font-weight:700;
-    display:flex; align-items:center; justify-content:center; gap:7px; text-align:center;
-  }
-  .tab-btn .dot{width:8px; height:8px; border-radius:50%; flex:none;}
-  .tab-btn[data-tab="federal"] .dot{background:var(--tab-federal);}
-  .tab-btn[data-tab="estadual"] .dot{background:var(--tab-estadual);}
-  .tab-btn[data-tab="financeiro"] .dot{background:var(--tab-financeiro);}
-  .tab-btn[data-tab="resumo"] .dot{background:var(--tab-resumo);}
-  .tab-btn[data-tab="federal"].active{background:var(--tab-federal); border-color:var(--tab-federal);}
-  .tab-btn[data-tab="estadual"].active{background:var(--tab-estadual); border-color:var(--tab-estadual);}
-  .tab-btn[data-tab="financeiro"].active{background:var(--tab-financeiro); border-color:var(--tab-financeiro); color:#0f172a;}
-  .tab-btn[data-tab="resumo"].active{background:var(--tab-resumo); border-color:var(--tab-resumo);}
-  .tab-btn.active .dot{background:#fff;}
-  .tab-btn[data-tab="financeiro"].active .dot{background:#0f172a;}
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
 
-  .spreadsheet-container{
-    background:var(--bg-card); border:1px solid var(--border-color); border-radius:18px; padding:14px;
-  }
-  .panel{display:none;}
-  .panel.active{display:block;}
+        .kpi-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid var(--primary);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
 
-  /* KPIs */
-  .kpis{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px;}
-  .kpi{background:var(--bg-item); border:1px solid var(--border-color); border-radius:12px; padding:10px 12px;}
-  .kpi .lbl{font-size:10.5px; color:var(--text-muted); margin-bottom:3px; font-weight:600;}
-  .kpi .val{font-size:19px; font-weight:800;}
-  .kpi .val small{font-size:11px; font-weight:600; color:var(--text-muted);}
-  .kpi.accent-federal .val{color:var(--tab-federal);}
-  .kpi.accent-estadual .val{color:#c084fc;}
-  .kpi.accent-financeiro .val{color:var(--tab-financeiro);}
+        .kpi-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #64748B;
+            font-weight: 700;
+        }
 
-  .progress-track{height:9px; border-radius:6px; background:#0f172a; overflow:hidden; margin-bottom:4px;}
-  .progress-fill{height:100%; border-radius:6px; transition:width .35s ease;}
-  .progress-txt{font-size:11px; color:var(--text-muted); display:flex; justify-content:space-between; margin-bottom:14px;}
+        .kpi-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+            margin-top: 6px;
+        }
 
-  /* Regiao accordion */
-  .regiao{margin-bottom:9px; border-radius:12px; overflow:hidden; border:1px solid var(--border-color); background:var(--bg-item);}
-  .regiao-head{width:100%; display:flex; align-items:center; justify-content:space-between; padding:12px 13px; background:none; border:none; text-align:left; color:var(--text-main);}
-  .regiao-head .titulo{font-size:14px; font-weight:700;}
-  .regiao-head .meta-mini{font-size:11px; color:var(--text-muted); margin-top:2px;}
-  .regiao-head .chev{font-size:12px; color:var(--text-muted); transition:transform .2s ease;}
-  .regiao-head.open .chev{transform:rotate(180deg);}
-  .regiao-bar-track{height:4px; background:#0f172a;}
-  .regiao-bar-fill{height:100%;}
-  .regiao-body{display:none; border-top:1px solid var(--border-color);}
-  .regiao-body.open{display:block;}
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            overflow-x: auto;
+        }
 
-  .item{padding:11px 13px; border-bottom:1px solid var(--border-color);}
-  .item:last-child{border-bottom:none;}
-  .item-top{display:flex; justify-content:space-between; align-items:baseline; gap:8px;}
-  .item-name{font-size:13.5px; font-weight:700;}
-  .item-city{font-size:11px; color:var(--text-muted); margin-top:1px;}
-  .item-pct{font-size:12px; font-weight:700; flex:none;}
-  .item-pct.ok{color:var(--green);} .item-pct.mid{color:var(--amber);} .item-pct.low{color:var(--red);}
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
 
-  .fields{display:flex; gap:7px; margin-top:8px;}
-  .field{flex:1; min-width:0;}
-  .field label{display:block; font-size:10px; color:var(--text-muted); margin-bottom:3px; font-weight:600; text-align:center;}
-  .stepper{display:flex; align-items:center; border:1px solid var(--border-color); border-radius:9px; overflow:hidden; background:#0f172a;}
-  .stepper.mini{height:32px;}
-  .stepper button{width:26px; flex:none; border:none; background:#1e293b; font-size:15px; color:var(--text-main); font-weight:700; height:100%;}
-  .stepper button:active{background:#28344a;}
-  .stepper input{
-    flex:1; min-width:0; border:none; background:none; text-align:center; font-size:13.5px; font-weight:700;
-    color:var(--text-main); padding:6px 0;
-  }
-  .stepper input::-webkit-outer-spin-button, .stepper input::-webkit-inner-spin-button{-webkit-appearance:none; margin:0;}
+        th {
+            background-color: var(--primary);
+            color: white;
+            text-align: left;
+            padding: 12px 16px;
+            font-weight: 600;
+        }
 
-  .mini-track{height:4px; background:#0f172a; border-radius:3px; margin-top:8px; overflow:hidden;}
-  .mini-fill{height:100%;}
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: top;
+        }
 
-  .fields3{display:flex; gap:6px; margin-top:8px;}
-  .fields3 .field{flex:1;}
+        tr:nth-child(even) {
+            background-color: var(--bg-light);
+        }
 
-  /* Financeiro */
-  .fin-summary{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:12px;}
-  .fin-card{background:var(--bg-item); border:1px solid var(--border-color); border-radius:12px; padding:9px 8px; text-align:center;}
-  .fin-card .lbl{font-size:9.5px; color:var(--text-muted); font-weight:600;}
-  .fin-card .val{font-size:14px; font-weight:800; margin-top:2px; color:var(--tab-financeiro);}
+        .city-name {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 15px;
+        }
 
-  .item-money{display:flex; justify-content:space-between; gap:9px; margin-top:8px; align-items:flex-end;}
-  .money-field{flex:1;}
-  .money-field label{display:block; font-size:10px; color:var(--text-muted); margin-bottom:3px; font-weight:600;}
-  .money-readonly{font-size:13px; font-weight:700; color:var(--text-muted); padding:8px 9px; background:#0f172a; border-radius:9px; border:1px solid var(--border-color);}
-  .money-input{width:100%; font-size:13px; font-weight:700; color:var(--text-main); padding:8px 9px; border:1px solid var(--border-color); border-radius:9px; background:#0f172a;}
-  .status-row{display:flex; gap:6px; margin-top:9px;}
-  .status-btn{flex:1; padding:7px 0; border-radius:8px; font-size:11.5px; font-weight:700; border:1.5px solid var(--border-color); background:#0f172a; color:var(--text-muted);}
-  .status-btn.sel-pendente{background:var(--red-bg); border-color:var(--red); color:var(--red);}
-  .status-btn.sel-parcial{background:var(--amber-bg); border-color:var(--amber); color:var(--amber);}
-  .status-btn.sel-pago{background:var(--green-bg); border-color:var(--green); color:var(--green);}
-  .obs{font-size:11px; color:var(--text-muted); margin-top:7px; font-style:italic;}
+        .leader-info {
+            font-size: 13px;
+            color: #475569;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
 
-  /* Resumo por regiao (read only) */
-  .resumo-card{background:var(--bg-item); border:1px solid var(--border-color); border-radius:14px; padding:14px; margin-bottom:12px;}
-  .resumo-card h3{font-size:15px; font-weight:800; margin-bottom:10px;}
-  .resumo-row{display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-top:1px solid var(--border-color);}
-  .resumo-row:first-of-type{border-top:none;}
-  .resumo-row .rl{font-size:12.5px; color:var(--text-muted);}
-  .resumo-row .rv{font-size:13.5px; font-weight:700;}
-  .resumo-track{height:7px; border-radius:5px; background:#0f172a; overflow:hidden; margin-top:6px;}
-  .resumo-fill{height:100%;}
+        .leader-badge {
+            background-color: #E2E8F0;
+            color: #334155;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
 
-  .footer-note{text-align:center; font-size:11px; color:var(--text-muted); padding:16px 10px 4px 10px;}
-  .reset-btn{display:block; margin:6px auto 0 auto; background:none; border:none; color:#60a5fa; font-size:12px; font-weight:700; text-decoration:underline; padding:6px;}
+        .badge-vitorio {
+            background-color: #FEE2E2;
+            color: #991B1B;
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-top: 4px;
+        }
 
-  .saved-toast{
-    position:fixed; bottom:16px; left:50%; transform:translateX(-50%) translateY(20px);
-    background:#0b1120; color:#fff; padding:8px 16px; border-radius:20px; font-size:12px; font-weight:600;
-    opacity:0; transition:opacity .25s ease, transform .25s ease; pointer-events:none; z-index:50;
-    border:1px solid var(--border-color);
-  }
-  .saved-toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
-</style>
+        .total-row {
+            background-color: #E2E8F0 !important;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-<div class="container">
 
-  <header>
-    <h1>Painel de Controle Eleitoral 2026</h1>
-    <p>Base Estratégica: Vale do Jequitinhonha, Ribeirão das Neves e Central</p>
-    <div class="update-badge"><div class="pulse-dot"></div> <span id="badgeTxt">Salvo neste dispositivo</span></div>
-  </header>
-
-  <div class="section-instruction">Selecione o painel de dados</div>
-
-  <div class="custom-tabs">
-    <button class="tab-btn active" data-tab="federal"><span class="dot"></span>Federal — Duílio</button>
-    <button class="tab-btn" data-tab="estadual"><span class="dot"></span>Estaduais</button>
-    <button class="tab-btn" data-tab="financeiro"><span class="dot"></span>Financeiro</button>
-    <button class="tab-btn" data-tab="resumo"><span class="dot"></span>Resumo por região</button>
-  </div>
-
-  <div class="spreadsheet-container">
-    <div class="panel active" id="panel-federal"></div>
-    <div class="panel" id="panel-estadual"></div>
-    <div class="panel" id="panel-financeiro"></div>
-    <div class="panel" id="panel-resumo"></div>
-  </div>
-
-  <div class="footer-note">
-    Os dados ficam salvos automaticamente na sua conta e continuam aqui da próxima vez que abrir este painel.
-    <button class="reset-btn" id="resetBtn">Restaurar dados originais</button>
-  </div>
-</div>
-
-<div class="saved-toast" id="toast">Salvo</div>
-
-<script>
-// ================= DADOS PADRÃO =================
-const REGIOES = ["Vale do Jequitinhonha","Metropolitana","Central"];
-
-const VOTOS_FEDERAL_PADRAO = [
-  ["Vale do Jequitinhonha","Araçuaí",34807,"A definir",0,0],
-  ["Vale do Jequitinhonha","Itinga",12569,"A definir",0,0],
-  ["Vale do Jequitinhonha","Novo Cruzeiro",26850,"A definir",0,0],
-  ["Vale do Jequitinhonha","Coronel Murta",8128,"A definir",0,0],
-  ["Vale do Jequitinhonha","Virgem da Lapa",11513,"A definir",0,0],
-  ["Vale do Jequitinhonha","Francisco Badaró",8795,"A definir",0,0],
-  ["Vale do Jequitinhonha","Leme do Prado",4312,"A definir",0,0],
-  ["Vale do Jequitinhonha","Genipapo de Minas",6000,"A definir",0,0],
-  ["Vale do Jequitinhonha","Itaobim",19025,"A definir",0,0],
-  ["Vale do Jequitinhonha","Ponto dos Volantes",10584,"A definir",0,0],
-  ["Vale do Jequitinhonha","Setubinha",9797,"A definir",0,0],
-  ["Vale do Jequitinhonha","Caraí",19251,"A definir",0,0],
-  ["Vale do Jequitinhonha","Teófilo Otoni",142030,"A definir",0,0],
-  ["Metropolitana","Ribeirão das Neves",327968,"Pastor Glaucon / Ana Silva + ACS",0,0],
-  ["Metropolitana","Ribeirão das Neves",327968,"Edmilson",100,150],
-  ["Metropolitana","Ribeirão das Neves",327968,"Baiano",50,80],
-  ["Metropolitana","Ribeirão das Neves",327968,"Leandrinho",50,80],
-  ["Metropolitana","Ribeirão das Neves",327968,"Dinho",100,150],
-  ["Metropolitana","Ribeirão das Neves",327968,"Apae",300,400],
-  ["Metropolitana","Ribeirão das Neves",327968,"Eliete",50,80],
-  ["Metropolitana","Ribeirão das Neves",327968,"Ludmila Apae",50,80],
-  ["Metropolitana","Ribeirão das Neves",327968,"Thiaguinho",50,80],
-  ["Metropolitana","Ribeirão das Neves",327968,"Fátima",50,80],
-  ["Metropolitana","Ribeirão das Neves",327968,"Ademir",20,30],
-  ["Metropolitana","Ribeirão das Neves",327968,"Brenda",20,30],
-  ["Metropolitana","Ribeirão das Neves",327968,"Ana Silvia",300,400],
-  ["Metropolitana","Ribeirão das Neves",327968,"Zé Roberto",20,30],
-  ["Metropolitana","Ribeirão das Neves",327968,"Emerson (Neviana)",100,150],
-  ["Metropolitana","Ribeirão das Neves",327968,"Balalau",20,30],
-  ["Metropolitana","Ribeirão das Neves",327968,"Emerson",50,80],
-  ["Metropolitana","Ribeirão das Neves",327968,"Vanderlei",50,80],
-  ["Metropolitana","Ribeirão das Neves",327968,"Luana / Igor",100,150],
-  ["Metropolitana","Ribeirão das Neves",327968,"Dê",50,80],
-  ["Metropolitana","Ribeirão das Neves",327968,"Bambu",30,50],
-  ["Metropolitana","Ribeirão das Neves",327968,"Lidiane",50,80],
-  ["Metropolitana","Ribeirão das Neves",327968,"Martins e Vila Cacique (bairro)",200,250],
-  ["Metropolitana","Esmeraldas",102608,"José Roberto (Amigo do Dinho)",0,0],
-  ["Metropolitana","Ibirité",181943,"A definir",0,0],
-  ["Central","Curvelo",82335,"Salomão / grupo de apoio",0,0]
-].map((r,i)=>({id:"vf"+i, regiao:r[0], cidade:r[1], populacao:r[2], lideranca:r[3], garantido:r[4], meta:r[5]}));
-
-const VOTOS_ESTADUAL_PADRAO = [
-  ["Vale do Jequitinhonha","Araçuaí",34807,"A definir",0,0,0,0,""],
-  ["Vale do Jequitinhonha","Itinga",12569,"A definir",0,0,0,0,""],
-  ["Vale do Jequitinhonha","Novo Cruzeiro",26850,"A definir",0,0,0,0,""],
-  ["Vale do Jequitinhonha","Coronel Murta",8128,"A definir",0,0,0,0,""],
-  ["Vale do Jequitinhonha","Virgem da Lapa",11513,"A definir",0,0,0,0,""],
-  ["Vale do Jequitinhonha","Francisco Badaró",8795,"A definir",0,0,0,0,""],
-  ["Vale do Jequitinhonha","Leme do Prado",4312,"A definir",0,0,0,0,""],
-  ["Vale do Jequitinhonha","Genipapo de Minas",6000,"A definir",0,0,0,0,""],
-  ["Vale do Jequitinhonha","Itaobim",19025,"A definir",0,0,0,0,""],
-  ["Vale do Jequitinhonha","Ponto dos Volantes",10584,"A definir",0,0,0,0,""],
-  ["Vale do Jequitinhonha","Setubinha",9797,"A definir",0,0,0,0,""],
-  ["Vale do Jequitinhonha","Caraí",19251,"A definir",0,0,0,0,""],
-  ["Vale do Jequitinhonha","Teófilo Otoni",142030,"A definir (Pedro, Neilando e Vitório apoiam)",0,0,0,0,"Cidade citada como apoio confirmado aos 3 estaduais; falta quantificar votos"],
-  ["Metropolitana","Ribeirão das Neves",327968,"Pastor Glaucon / Ana Silva + ACS",0,0,0,0,"Apoiam Pedro; Neilando tem números próprios abaixo"],
-  ["Metropolitana","Ribeirão das Neves",327968,"Edmilson",0,100,0,130,""],
-  ["Metropolitana","Ribeirão das Neves",327968,"Dinho",0,100,0,130,""],
-  ["Metropolitana","Ribeirão das Neves",327968,"Apae",0,300,0,350,""],
-  ["Metropolitana","Ribeirão das Neves",327968,"Eliete",0,50,0,70,""],
-  ["Metropolitana","Ribeirão das Neves",327968,"Ludmila Apae",0,50,0,70,""],
-  ["Metropolitana","Ribeirão das Neves",327968,"Thiaguinho",0,50,0,70,""],
-  ["Metropolitana","Ribeirão das Neves",327968,"Fátima",0,50,0,70,""],
-  ["Metropolitana","Ribeirão das Neves",327968,"Ademir",0,20,0,30,""],
-  ["Metropolitana","Ribeirão das Neves",327968,"Brenda",0,20,0,30,""],
-  ["Metropolitana","Ribeirão das Neves",327968,"Zé Roberto",0,20,0,30,""],
-  ["Metropolitana","Ribeirão das Neves",327968,"Balalau",0,20,0,30,""],
-  ["Metropolitana","Ribeirão das Neves",327968,"Emerson",0,50,0,70,""],
-  ["Metropolitana","Ribeirão das Neves",327968,"Vanderlei",0,50,0,70,""],
-  ["Metropolitana","Ribeirão das Neves",327968,"Luana / Igor",0,100,0,130,""],
-  ["Metropolitana","Ribeirão das Neves",327968,"Dê",0,50,0,70,""],
-  ["Metropolitana","Ribeirão das Neves",327968,"Bambu",0,30,0,50,""],
-  ["Metropolitana","Ribeirão das Neves",327968,"Lidiane",0,50,0,70,""],
-  ["Metropolitana","Ribeirão das Neves",327968,"Daiane",0,100,0,130,""],
-  ["Metropolitana","Ribeirão das Neves",327968,"Paula",0,100,0,130,""],
-  ["Metropolitana","Ribeirão das Neves",327968,"Martins e Vila Cacique (bairro)",0,200,0,250,""],
-  ["Metropolitana","Esmeraldas",102608,"José Roberto (Amigo do Dinho)",0,0,0,0,"Apoia Neilando e Pedro (e Duílio no federal)"],
-  ["Metropolitana","Ibirité",181943,"A definir",0,0,0,0,"Falta nome da liderança"],
-  ["Central","Curvelo",82335,"Salomão",1000,0,500,2000,"Cidade escolhida para a meta de 500 votos do Vitório, longe do Jequitinhonha"],
-  ["Central","Curvelo",82335,"Grupo de apoio (visita a confirmar)",0,0,0,500,"Vanderlei, Dirlei, Fátima, Simone, Gleison, Iago, Renato, Faubrinho, Jô, Amanda, César, Tim, Geraldinha — orçamento de 15 a 20 mil"]
-].map((r,i)=>({id:"ve"+i, regiao:r[0], cidade:r[1], populacao:r[2], lideranca:r[3], pedro:r[4], neilando:r[5], vitorio:r[6], meta:r[7], obs:r[8]}));
-
-const FIN_PADRAO = [
-  ["Metropolitana","Ribeirão das Neves (Justinópolis)","Ademir","Liderança de bairro",500,""],
-  ["Metropolitana","Ribeirão das Neves (Metropolitano)","Baiano","Liderança de bairro",5000,""],
-  ["Metropolitana","Ribeirão das Neves (Metropolitano)","Erica","Liderança de bairro",5000,""],
-  ["Metropolitana","Ribeirão das Neves","Balu","Liderança de bairro",2500,""],
-  ["Metropolitana","Ribeirão das Neves","Marquinho","Liderança de bairro",2500,""],
-  ["Metropolitana","Ribeirão das Neves","Marcelo (churrasqueiro)","Liderança de bairro",2500,""],
-  ["Metropolitana","Ribeirão das Neves (San Genaro)","Fátima","Liderança de bairro",4000,""],
-  ["Metropolitana","Ribeirão das Neves (Centro de Neves)","Júnior Ong","Liderança de bairro",2000,""],
-  ["Metropolitana","Ribeirão das Neves (Colonial)","Emerson","Liderança de bairro",3000,""],
-  ["Metropolitana","Ribeirão das Neves","Viviane (Igreja)","Liderança religiosa",3000,""],
-  ["Metropolitana","Ribeirão das Neves (Colonial)","Leandrinho","Liderança de bairro",9000,""],
-  ["Metropolitana","Ribeirão das Neves (Colonial)","Emerson (+ 4 pessoas a 1.500)","Liderança de bairro",15000,"9.000 + 4 pessoas a 1.500 cada"],
-  ["Metropolitana","Ribeirão das Neves (Alterosa)","Adenilse (+ 2 pessoas a 3.000)","Liderança de bairro",11000,"5.000 + 2 pessoas a 3.000 cada"],
-  ["Metropolitana","Ribeirão das Neves (Colonial)","Eliete","Liderança de bairro",3000,""],
-  ["Metropolitana","Ribeirão das Neves","João (8 pessoas a 1.000)","Equipe de apoio",8000,""],
-  ["Metropolitana","Ribeirão das Neves (Veneza)","Dinho","Liderança de bairro",3000,""],
-  ["Metropolitana","Ribeirão das Neves (Vila Hortinha)","Valdeci","Liderança de bairro",1500,""],
-  ["Metropolitana","Ribeirão das Neves (Centro de Neves)","Tiaguinho","Liderança de bairro",1500,""],
-  ["Metropolitana","Ribeirão das Neves","Ana Silva (+ 22 ACS a 1.000)","Liderança / ACS",25000,"3.000 + 22 pessoas a 1.000 cada"],
-  ["Metropolitana","Ribeirão das Neves (Veneza)","Jeré","Liderança de bairro",10000,""],
-  ["Metropolitana","Ribeirão das Neves","Eufrain","Liderança de bairro",2000,""],
-  ["Metropolitana","Ribeirão das Neves","Léo do Posto","Liderança de bairro",10000,""],
-  ["Metropolitana","Ribeirão das Neves","3 carros de apoio","Logística / Transporte",30000,"3 carros a 10.000 cada"],
-  ["Metropolitana","Ribeirão das Neves","Motorista","Logística / Transporte",2000,"+ ajuda de almoço (valor a definir)"],
-  ["Central","Curvelo","Salomão e grupo de visita","Liderança / Visita",0,"Orçamento de 15.000 a 20.000 — falta definir valor final"],
-  ["Metropolitana","Ibirité","A definir","Liderança de bairro",0,"Falta nome da liderança e valor"],
-  ["Metropolitana","Esmeraldas","José Roberto (Amigo do Dinho)","Liderança de bairro",0,"Valor a definir"]
-].map((r,i)=>({id:"f"+i, regiao:r[0], cidade:r[1], pessoa:r[2], categoria:r[3], orcado:r[4], pago:0, status:"Pendente", obs:r[5]}));
-
-let votosFederal = [], votosEstadual = [], financeiro = [];
-let openAccordion = {federal:{}, estadual:{}, financeiro:{}};
-let saveTimers = {};
-
-function fmtN(n){ return Math.round(n).toLocaleString('pt-BR'); }
-function fmtR(n){ return "R$ " + Math.round(n).toLocaleString('pt-BR'); }
-function pctClass(p){ if(p>=0.66) return 'ok'; if(p>=0.33) return 'mid'; return 'low'; }
-function barColor(p){ if(p>=0.66) return '#10b981'; if(p>=0.33) return '#eab308'; return '#ef4444'; }
-
-function showToast(msg){
-  const t = document.getElementById('toast');
-  t.textContent = msg || "Salvo";
-  t.classList.add('show');
-  clearTimeout(t._h);
-  t._h = setTimeout(()=>t.classList.remove('show'), 1000);
-  document.getElementById('badgeTxt').textContent = "Salvo às " + new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
-}
-
-function scheduleSave(key, dataRef){
-  clearTimeout(saveTimers[key]);
-  saveTimers[key] = setTimeout(async ()=>{
-    try{
-      await window.storage.set(key, JSON.stringify(dataRef), false);
-      showToast('Salvo');
-    }catch(e){ console.error(e); showToast('Erro ao salvar'); }
-  }, 450);
-}
-
-async function loadAll(){
-  try{
-    const r = await window.storage.get('campanha-votos-federal', false);
-    votosFederal = r && r.value ? JSON.parse(r.value) : JSON.parse(JSON.stringify(VOTOS_FEDERAL_PADRAO));
-  }catch(e){ votosFederal = JSON.parse(JSON.stringify(VOTOS_FEDERAL_PADRAO)); }
-  try{
-    const r = await window.storage.get('campanha-votos-estadual', false);
-    votosEstadual = r && r.value ? JSON.parse(r.value) : JSON.parse(JSON.stringify(VOTOS_ESTADUAL_PADRAO));
-  }catch(e){ votosEstadual = JSON.parse(JSON.stringify(VOTOS_ESTADUAL_PADRAO)); }
-  try{
-    const r = await window.storage.get('campanha-financeiro', false);
-    financeiro = r && r.value ? JSON.parse(r.value) : JSON.parse(JSON.stringify(FIN_PADRAO));
-  }catch(e){ financeiro = JSON.parse(JSON.stringify(FIN_PADRAO)); }
-  REGIOES.forEach(r=>{ openAccordion.federal[r]=false; openAccordion.estadual[r]=false; openAccordion.financeiro[r]=false; });
-  openAccordion.federal[REGIOES[0]] = true;
-  openAccordion.estadual[REGIOES[1]] = true;
-  openAccordion.financeiro[REGIOES[1]] = true;
-}
-
-// ---------------- FEDERAL ----------------
-function renderFederal(){
-  const cont = document.getElementById('panel-federal');
-  const meta = votosFederal.reduce((s,v)=>s+Number(v.meta||0),0);
-  const gar = votosFederal.reduce((s,v)=>s+Number(v.garantido||0),0);
-  const pct = meta>0 ? gar/meta : 0;
-  const nLideres = votosFederal.filter(v=>v.lideranca!=='A definir' && Number(v.garantido)>0).length;
-
-  cont.innerHTML = `
-    <div class="kpis">
-      <div class="kpi accent-federal"><div class="lbl">Meta de votos</div><div class="val">${fmtN(meta)}</div></div>
-      <div class="kpi accent-federal"><div class="lbl">Garantidos</div><div class="val">${fmtN(gar)}</div></div>
+    <div class="header">
+        <h1>🗺️ PAINEL TÁTICO REGIONAL DE MG & LIDERANÇAS RESPONSÁVEIS</h1>
+        <p>Mapeamento completo de cidades, metas por deputado e lideranças responsáveis pela captação de votos.</p>
     </div>
-    <div class="progress-track"><div class="progress-fill" style="width:${Math.min(pct*100,100)}%; background:var(--tab-federal);"></div></div>
-    <div class="progress-txt"><span>${(pct*100).toFixed(1)}% da meta · faltam ${fmtN(Math.max(meta-gar,0))}</span><span>${nLideres} lideranças</span></div>
-    <div id="fed-regioes"></div>
-  `;
-  const regCont = cont.querySelector('#fed-regioes');
-  REGIOES.forEach(regiao=>{
-    const itens = votosFederal.filter(v=>v.regiao===regiao);
-    if(itens.length===0) return;
-    const metaR = itens.reduce((s,v)=>s+Number(v.meta||0),0);
-    const garR = itens.reduce((s,v)=>s+Number(v.garantido||0),0);
-    const pctR = metaR>0 ? garR/metaR : 0;
-    const isOpen = openAccordion.federal[regiao];
-    const box = document.createElement('div');
-    box.className = 'regiao';
-    box.innerHTML = `
-      <button class="regiao-head ${isOpen?'open':''}" data-regiao="${regiao}">
-        <div><div class="titulo">${regiao}</div><div class="meta-mini">${fmtN(garR)} de ${fmtN(metaR)} votos · ${(pctR*100).toFixed(0)}%</div></div>
-        <div class="chev">▾</div>
-      </button>
-      <div class="regiao-bar-track"><div class="regiao-bar-fill" style="width:${Math.min(pctR*100,100)}%; background:var(--tab-federal);"></div></div>
-      <div class="regiao-body ${isOpen?'open':''}"></div>
-    `;
-    regCont.appendChild(box);
-    const body = box.querySelector('.regiao-body');
-    itens.forEach(v=>{
-      const p = v.meta>0 ? v.garantido/v.meta : 0;
-      const row = document.createElement('div');
-      row.className = 'item';
-      row.innerHTML = `
-        <div class="item-top">
-          <div><div class="item-name">${v.lideranca}</div><div class="item-city">${v.cidade} · pop. ${fmtN(v.populacao)}</div></div>
-          <div class="item-pct ${pctClass(p)}">${v.meta>0 ? (p*100).toFixed(0)+'%' : '—'}</div>
-        </div>
-        <div class="fields">
-          <div class="field"><label>Garantidos</label>
-            <div class="stepper"><button data-act="dec-g">–</button><input type="number" inputmode="numeric" data-field="garantido" value="${v.garantido}"><button data-act="inc-g">+</button></div>
-          </div>
-          <div class="field"><label>Meta</label>
-            <div class="stepper"><button data-act="dec-m">–</button><input type="number" inputmode="numeric" data-field="meta" value="${v.meta}"><button data-act="inc-m">+</button></div>
-          </div>
-        </div>
-        <div class="mini-track"><div class="mini-fill" style="width:${Math.min(p*100,100)}%; background:${barColor(p)};"></div></div>
-      `;
-      body.appendChild(row);
-      const inpG = row.querySelector('[data-field="garantido"]');
-      const inpM = row.querySelector('[data-field="meta"]');
-      function upd(){
-        v.garantido = Math.max(0, Number(inpG.value||0));
-        v.meta = Math.max(0, Number(inpM.value||0));
-        scheduleSave('campanha-votos-federal', votosFederal);
-        renderFederal(); renderResumo();
-      }
-      inpG.addEventListener('change', upd);
-      inpM.addEventListener('change', upd);
-      row.querySelector('[data-act="dec-g"]').addEventListener('click', ()=>{ inpG.value=Math.max(0,Number(inpG.value||0)-10); upd(); });
-      row.querySelector('[data-act="inc-g"]').addEventListener('click', ()=>{ inpG.value=Number(inpG.value||0)+10; upd(); });
-      row.querySelector('[data-act="dec-m"]').addEventListener('click', ()=>{ inpM.value=Math.max(0,Number(inpM.value||0)-10); upd(); });
-      row.querySelector('[data-act="inc-m"]').addEventListener('click', ()=>{ inpM.value=Number(inpM.value||0)+10; upd(); });
-    });
-    box.querySelector('.regiao-head').addEventListener('click', ()=>{ openAccordion.federal[regiao]=!openAccordion.federal[regiao]; renderFederal(); });
-  });
-}
 
-// ---------------- ESTADUAL ----------------
-function renderEstadual(){
-  const cont = document.getElementById('panel-estadual');
-  const meta = votosEstadual.reduce((s,v)=>s+Number(v.meta||0),0);
-  const gar = votosEstadual.reduce((s,v)=>s+Number(v.pedro||0)+Number(v.neilando||0)+Number(v.vitorio||0),0);
-  const pct = meta>0 ? gar/meta : 0;
-
-  cont.innerHTML = `
-    <div class="kpis">
-      <div class="kpi accent-estadual"><div class="lbl">Meta (soma 3 candidatos)</div><div class="val">${fmtN(meta)}</div></div>
-      <div class="kpi accent-estadual"><div class="lbl">Garantidos (soma)</div><div class="val">${fmtN(gar)}</div></div>
+    <div class="grid-container">
+        <div class="kpi-card" style="border-left-color: var(--primary);">
+            <div class="kpi-title">Deputado Federal Duilio</div>
+            <div class="kpi-value">12.100 Votos</div>
+        </div>
+        <div class="kpi-card" style="border-left-color: var(--accent-pedro);">
+            <div class="kpi-title">Dep. Estadual Pedro (22550)</div>
+            <div class="kpi-value">5.130 Votos</div>
+        </div>
+        <div class="kpi-card" style="border-left-color: var(--accent-neilando);">
+            <div class="kpi-title">Dep. Estadual Neilando</div>
+            <div class="kpi-value">3.740 Votos</div>
+        </div>
+        <div class="kpi-card" style="border-left-color: var(--accent-vitorio);">
+            <div class="kpi-title">Dep. Estadual Vitório</div>
+            <div class="kpi-value">1.800 Votos</div>
+        </div>
     </div>
-    <div class="progress-track"><div class="progress-fill" style="width:${Math.min(pct*100,100)}%; background:var(--tab-estadual);"></div></div>
-    <div class="progress-txt"><span>${(pct*100).toFixed(1)}% da meta · faltam ${fmtN(Math.max(meta-gar,0))}</span><span>Pedro · Neilando · Vitório</span></div>
-    <div id="est-regioes"></div>
-  `;
-  const regCont = cont.querySelector('#est-regioes');
-  REGIOES.forEach(regiao=>{
-    const itens = votosEstadual.filter(v=>v.regiao===regiao);
-    if(itens.length===0) return;
-    const metaR = itens.reduce((s,v)=>s+Number(v.meta||0),0);
-    const garR = itens.reduce((s,v)=>s+Number(v.pedro||0)+Number(v.neilando||0)+Number(v.vitorio||0),0);
-    const pctR = metaR>0 ? garR/metaR : 0;
-    const isOpen = openAccordion.estadual[regiao];
-    const box = document.createElement('div');
-    box.className = 'regiao';
-    box.innerHTML = `
-      <button class="regiao-head ${isOpen?'open':''}" data-regiao="${regiao}">
-        <div><div class="titulo">${regiao}</div><div class="meta-mini">${fmtN(garR)} de ${fmtN(metaR)} votos · ${(pctR*100).toFixed(0)}%</div></div>
-        <div class="chev">▾</div>
-      </button>
-      <div class="regiao-bar-track"><div class="regiao-bar-fill" style="width:${Math.min(pctR*100,100)}%; background:var(--tab-estadual);"></div></div>
-      <div class="regiao-body ${isOpen?'open':''}"></div>
-    `;
-    regCont.appendChild(box);
-    const body = box.querySelector('.regiao-body');
-    itens.forEach(v=>{
-      const total = Number(v.pedro||0)+Number(v.neilando||0)+Number(v.vitorio||0);
-      const p = v.meta>0 ? total/v.meta : 0;
-      const row = document.createElement('div');
-      row.className = 'item';
-      row.innerHTML = `
-        <div class="item-top">
-          <div><div class="item-name">${v.lideranca}</div><div class="item-city">${v.cidade} · pop. ${fmtN(v.populacao)}</div></div>
-          <div class="item-pct ${pctClass(p)}">${v.meta>0 ? (p*100).toFixed(0)+'%' : '—'}</div>
-        </div>
-        <div class="fields3">
-          <div class="field"><label>Pedro</label><div class="stepper mini"><input type="number" inputmode="numeric" data-field="pedro" value="${v.pedro}"></div></div>
-          <div class="field"><label>Neilando</label><div class="stepper mini"><input type="number" inputmode="numeric" data-field="neilando" value="${v.neilando}"></div></div>
-          <div class="field"><label>Vitório</label><div class="stepper mini"><input type="number" inputmode="numeric" data-field="vitorio" value="${v.vitorio}"></div></div>
-          <div class="field"><label>Meta</label><div class="stepper mini"><input type="number" inputmode="numeric" data-field="meta" value="${v.meta}"></div></div>
-        </div>
-        <div class="mini-track"><div class="mini-fill" style="width:${Math.min(p*100,100)}%; background:${barColor(p)};"></div></div>
-        ${v.obs ? `<div class="obs">${v.obs}</div>` : ''}
-      `;
-      body.appendChild(row);
-      ['pedro','neilando','vitorio','meta'].forEach(f=>{
-        const inp = row.querySelector(`[data-field="${f}"]`);
-        inp.addEventListener('change', ()=>{
-          v[f] = Math.max(0, Number(inp.value||0));
-          scheduleSave('campanha-votos-estadual', votosEstadual);
-          renderEstadual(); renderResumo();
-        });
-      });
-    });
-    box.querySelector('.regiao-head').addEventListener('click', ()=>{ openAccordion.estadual[regiao]=!openAccordion.estadual[regiao]; renderEstadual(); });
-  });
-}
 
-// ---------------- FINANCEIRO ----------------
-function renderFinanceiro(){
-  const cont = document.getElementById('panel-financeiro');
-  const orcadoT = financeiro.reduce((s,f)=>s+Number(f.orcado||0),0);
-  const pagoT = financeiro.reduce((s,f)=>s+Number(f.pago||0),0);
-  cont.innerHTML = `
-    <div class="fin-summary">
-      <div class="fin-card"><div class="lbl">Orçado</div><div class="val">${fmtR(orcadoT)}</div></div>
-      <div class="fin-card"><div class="lbl">Pago</div><div class="val">${fmtR(pagoT)}</div></div>
-      <div class="fin-card"><div class="lbl">Saldo</div><div class="val">${fmtR(orcadoT-pagoT)}</div></div>
+    <div class="table-container">
+        <h2>📌 Distribuição de Votos por Cidade e Liderança Responsável</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Município / Liderança Responsável</th>
+                    <th>Região / Polo</th>
+                    <th>Fed. Duilio</th>
+                    <th>Est. Pedro</th>
+                    <th>Est. Neilando</th>
+                    <th>Est. Vitório</th>
+                    <th>Estratégia Local</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="city-name">Ribeirão das Neves</div>
+                        <div class="leader-info">👤 <strong>Liderança Responsável:</strong> Pastor Glauco, Ana Silva & 22 ACS</div>
+                    </td>
+                    <td>Metropolitana (RMBH)</td>
+                    <td>5.000</td>
+                    <td>2.000</td>
+                    <td>500</td>
+                    <td>300</td>
+                    <td>Base Principal de Votação Principal</td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="city-name">Esmeraldas</div>
+                        <div class="leader-info">👤 <strong>Liderança Responsável:</strong> José Roberto & Martins</div>
+                    </td>
+                    <td>Metropolitana (RMBH)</td>
+                    <td>800</td>
+                    <td>300</td>
+                    <td>200</td>
+                    <td>100</td>
+                    <td>Mobilização Regional RMBH</td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="city-name">Ibirité</div>
+                        <div class="leader-info">👤 <strong>Liderança Responsável:</strong> Lideranças Comunitárias Locais</div>
+                    </td>
+                    <td>Metropolitana (RMBH)</td>
+                    <td>400</td>
+                    <td>300</td>
+                    <td>100</td>
+                    <td>50</td>
+                    <td>Apoio Comunitário Urbano</td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="city-name">Curvelo</div>
+                        <div class="leader-info">👤 <strong>Liderança Responsável:</strong> Vanderlei, Dirlei, Fátima & Gleison</div>
+                    </td>
+                    <td>Central</td>
+                    <td>1.500</td>
+                    <td>600</td>
+                    <td>300</td>
+                    <td>100</td>
+                    <td>Polo Regional de Expansão Central</td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="city-name">Teófilo Otoni</div>
+                        <div class="leader-info">👤 <strong>Liderança Responsável:</strong> Coordenadores Regionais do Mucuri</div>
+                    </td>
+                    <td>Vale do Mucuri</td>
+                    <td>800</td>
+                    <td>300</td>
+                    <td>600</td>
+                    <td>100</td>
+                    <td>Base Forte de Neilando / Pedro</td>
+                </tr>
+                <tr style="background-color: #FEF2F2;">
+                    <td>
+                        <div class="city-name">Araçuaí</div>
+                        <div class="leader-info">👤 <strong>Liderança Responsável:</strong> Salomão & Lideranças do Médio Jequitinhonha</div>
+                        <span class="badge-vitorio">⭐ Polo Longe de Vitório (500 Votos)</span>
+                    </td>
+                    <td>Vale do Jequitinhonha</td>
+                    <td>500</td>
+                    <td>200</td>
+                    <td>300</td>
+                    <td><strong>500</strong></td>
+                    <td><strong>Polo Distante Estratégico (Dobrada 1:1)</strong></td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="city-name">Itinga</div>
+                        <div class="leader-info">👤 <strong>Liderança Responsável:</strong> Lideranças Comunitárias e Rurais</div>
+                    </td>
+                    <td>Vale do Jequitinhonha</td>
+                    <td>300</td>
+                    <td>150</td>
+                    <td>200</td>
+                    <td>50</td>
+                    <td>Acordo Salomão / Médio Jequitinhonha</td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="city-name">Novo Cruzeiro</div>
+                        <div class="leader-info">👤 <strong>Liderança Responsável:</strong> Representantes Comunitários Locais</div>
+                    </td>
+                    <td>Vale do Jequitinhonha</td>
+                    <td>400</td>
+                    <td>200</td>
+                    <td>250</td>
+                    <td>50</td>
+                    <td>Acordo Salomão / Cobertura Regional</td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="city-name">Coronel Murta</div>
+                        <div class="leader-info">👤 <strong>Liderança Responsável:</strong> Lideranças Locais de Apoio</div>
+                    </td>
+                    <td>Vale do Jequitinhonha</td>
+                    <td>250</td>
+                    <td>100</td>
+                    <td>150</td>
+                    <td>50</td>
+                    <td>Acordo Salomão</td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="city-name">Virgem da Lapa</div>
+                        <div class="leader-info">👤 <strong>Liderança Responsável:</strong> Representantes de Bairro e Zonas Rurais</div>
+                    </td>
+                    <td>Vale do Jequitinhonha</td>
+                    <td>300</td>
+                    <td>120</td>
+                    <td>150</td>
+                    <td>50</td>
+                    <td>Acordo Salomão</td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="city-name">Itaobim</div>
+                        <div class="leader-info">👤 <strong>Liderança Responsável:</strong> Lideranças Regionais Parceiras</div>
+                    </td>
+                    <td>Vale do Jequitinhonha</td>
+                    <td>400</td>
+                    <td>200</td>
+                    <td>250</td>
+                    <td>100</td>
+                    <td>Eixo Rodoviário Jequitinhonha</td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="city-name">Outros Municípios do Jequitinhonha (6 cidades)</div>
+                        <div class="leader-info">👤 <strong>Liderança Responsável:</strong> Rede Integrada de Lideranças Rurais</div>
+                    </td>
+                    <td>Vale do Jequitinhonha</td>
+                    <td>1.200</td>
+                    <td>660</td>
+                    <td>890</td>
+                    <td>350</td>
+                    <td>Captação Pulverizada de Apoios</td>
+                </tr>
+                <tr class="total-row">
+                    <td><strong>TOTAL MINAS GERAIS</strong></td>
+                    <td><strong>17 Cidades</strong></td>
+                    <td><strong>12.100</strong></td>
+                    <td><strong>5.130</strong></td>
+                    <td><strong>3.740</strong></td>
+                    <td><strong>1.800</strong></td>
+                    <td><strong>Consolidado Geral de MG</strong></td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-    <div id="fin-regioes"></div>
-  `;
-  const regCont = cont.querySelector('#fin-regioes');
-  REGIOES.forEach(regiao=>{
-    const itens = financeiro.filter(f=>f.regiao===regiao);
-    if(itens.length===0) return;
-    const orcR = itens.reduce((s,f)=>s+Number(f.orcado||0),0);
-    const pagR = itens.reduce((s,f)=>s+Number(f.pago||0),0);
-    const pctR = orcR>0 ? pagR/orcR : 0;
-    const isOpen = openAccordion.financeiro[regiao];
-    const box = document.createElement('div');
-    box.className = 'regiao';
-    box.innerHTML = `
-      <button class="regiao-head ${isOpen?'open':''}" data-regiao="${regiao}">
-        <div><div class="titulo">${regiao}</div><div class="meta-mini">${fmtR(pagR)} pago de ${fmtR(orcR)}</div></div>
-        <div class="chev">▾</div>
-      </button>
-      <div class="regiao-bar-track"><div class="regiao-bar-fill" style="width:${Math.min(pctR*100,100)}%; background:var(--tab-financeiro);"></div></div>
-      <div class="regiao-body ${isOpen?'open':''}"></div>
-    `;
-    regCont.appendChild(box);
-    const body = box.querySelector('.regiao-body');
-    itens.forEach(f=>{
-      const row = document.createElement('div');
-      row.className = 'item';
-      row.innerHTML = `
-        <div class="item-top"><div><div class="item-name">${f.pessoa}</div><div class="item-city">${f.cidade} · ${f.categoria}</div></div></div>
-        <div class="item-money">
-          <div class="money-field"><label>Orçado</label><div class="money-readonly">${fmtR(f.orcado)}</div></div>
-          <div class="money-field"><label>Pago</label><input class="money-input" type="number" inputmode="numeric" data-field="pago" value="${f.pago}"></div>
-        </div>
-        <div class="status-row">
-          <button class="status-btn" data-status="Pendente">Pendente</button>
-          <button class="status-btn" data-status="Parcial">Parcial</button>
-          <button class="status-btn" data-status="Pago">Pago</button>
-        </div>
-        ${f.obs ? `<div class="obs">${f.obs}</div>` : ''}
-      `;
-      body.appendChild(row);
-      row.querySelectorAll('.status-btn').forEach(btn=>{
-        if(btn.dataset.status===f.status) btn.classList.add('sel-'+f.status.toLowerCase());
-        btn.addEventListener('click', ()=>{ f.status=btn.dataset.status; scheduleSave('campanha-financeiro', financeiro); renderFinanceiro(); });
-      });
-      const inpPago = row.querySelector('[data-field="pago"]');
-      inpPago.addEventListener('change', ()=>{
-        f.pago = Math.max(0, Number(inpPago.value||0));
-        scheduleSave('campanha-financeiro', financeiro);
-        renderFinanceiro(); renderResumo();
-      });
-    });
-    box.querySelector('.regiao-head').addEventListener('click', ()=>{ openAccordion.financeiro[regiao]=!openAccordion.financeiro[regiao]; renderFinanceiro(); });
-  });
-}
 
-// ---------------- RESUMO POR REGIÃO ----------------
-function renderResumo(){
-  const cont = document.getElementById('panel-resumo');
-  cont.innerHTML = '';
-  REGIOES.forEach(regiao=>{
-    const fed = votosFederal.filter(v=>v.regiao===regiao);
-    const est = votosEstadual.filter(v=>v.regiao===regiao);
-    const fin = financeiro.filter(f=>f.regiao===regiao);
-    const metaF = fed.reduce((s,v)=>s+Number(v.meta||0),0);
-    const garF = fed.reduce((s,v)=>s+Number(v.garantido||0),0);
-    const metaE = est.reduce((s,v)=>s+Number(v.meta||0),0);
-    const garE = est.reduce((s,v)=>s+Number(v.pedro||0)+Number(v.neilando||0)+Number(v.vitorio||0),0);
-    const orc = fin.reduce((s,f)=>s+Number(f.orcado||0),0);
-    const pag = fin.reduce((s,f)=>s+Number(f.pago||0),0);
-    const pctF = metaF>0 ? garF/metaF : 0;
-    const pctE = metaE>0 ? garE/metaE : 0;
-    const card = document.createElement('div');
-    card.className = 'resumo-card';
-    card.innerHTML = `
-      <h3>${regiao}</h3>
-      <div class="resumo-row"><span class="rl">Meta Federal (Duílio)</span><span class="rv" style="color:var(--tab-federal)">${fmtN(garF)} / ${fmtN(metaF)}</span></div>
-      <div class="resumo-track"><div class="resumo-fill" style="width:${Math.min(pctF*100,100)}%; background:var(--tab-federal);"></div></div>
-      <div class="resumo-row"><span class="rl">Meta Estadual (soma)</span><span class="rv" style="color:#c084fc">${fmtN(garE)} / ${fmtN(metaE)}</span></div>
-      <div class="resumo-track"><div class="resumo-fill" style="width:${Math.min(pctE*100,100)}%; background:var(--tab-estadual);"></div></div>
-      <div class="resumo-row"><span class="rl">Investimento</span><span class="rv" style="color:var(--tab-financeiro)">${fmtR(pag)} / ${fmtR(orc)}</span></div>
-    `;
-    cont.appendChild(card);
-  });
-  const metaFT = votosFederal.reduce((s,v)=>s+Number(v.meta||0),0);
-  const garFT = votosFederal.reduce((s,v)=>s+Number(v.garantido||0),0);
-  const metaET = votosEstadual.reduce((s,v)=>s+Number(v.meta||0),0);
-  const garET = votosEstadual.reduce((s,v)=>s+Number(v.pedro||0)+Number(v.neilando||0)+Number(v.vitorio||0),0);
-  const orcT = financeiro.reduce((s,f)=>s+Number(f.orcado||0),0);
-  const pagT = financeiro.reduce((s,f)=>s+Number(f.pago||0),0);
-  const totalCard = document.createElement('div');
-  totalCard.className = 'resumo-card';
-  totalCard.style.border = '1.5px solid #475569';
-  totalCard.innerHTML = `
-    <h3>Total geral da campanha</h3>
-    <div class="resumo-row"><span class="rl">Federal — Duílio</span><span class="rv" style="color:var(--tab-federal)">${fmtN(garFT)} / ${fmtN(metaFT)}</span></div>
-    <div class="resumo-row"><span class="rl">Estaduais (soma)</span><span class="rv" style="color:#c084fc">${fmtN(garET)} / ${fmtN(metaET)}</span></div>
-    <div class="resumo-row"><span class="rl">Investimento</span><span class="rv" style="color:var(--tab-financeiro)">${fmtR(pagT)} / ${fmtR(orcT)}</span></div>
-  `;
-  cont.prepend(totalCard);
-}
-
-function renderAll(){ renderFederal(); renderEstadual(); renderFinanceiro(); renderResumo(); }
-
-document.querySelectorAll('.tab-btn').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
-    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
-  });
-});
-
-document.getElementById('resetBtn').addEventListener('click', async ()=>{
-  if(!confirm('Isso vai apagar suas edições e voltar aos dados originais. Continuar?')) return;
-  votosFederal = JSON.parse(JSON.stringify(VOTOS_FEDERAL_PADRAO));
-  votosEstadual = JSON.parse(JSON.stringify(VOTOS_ESTADUAL_PADRAO));
-  financeiro = JSON.parse(JSON.stringify(FIN_PADRAO));
-  try{
-    await window.storage.set('campanha-votos-federal', JSON.stringify(votosFederal), false);
-    await window.storage.set('campanha-votos-estadual', JSON.stringify(votosEstadual), false);
-    await window.storage.set('campanha-financeiro', JSON.stringify(financeiro), false);
-  }catch(e){}
-  renderAll();
-  showToast('Restaurado');
-});
-
-(async function init(){
-  await loadAll();
-  renderAll();
-})();
-</script>
 </body>
 </html>
