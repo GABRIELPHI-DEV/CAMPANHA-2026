@@ -156,7 +156,6 @@
             border: 1px solid #1e293b;
         }
 
-        /* Oculta cabeçalhos do Google que deixam feio e limpa o layout */
         iframe {
             width: 100%;
             height: 750px;
@@ -181,7 +180,7 @@
 
         <div class="section-instruction">Selecione o Painel de Dados Abaixo</div>
 
-        <!-- Menu Superior de Abas Totalmente Estilizado -->
+        <!-- Menu Superior de Abas Customizado com URLs seguras de Preview -->
         <div class="custom-tabs">
             <button class="tab-btn active" data-tab="federal" onclick="switchTab('federal', 'https://google.com')">
                 🔵 DEPUTADO FEDERAL — DUÍLIO
@@ -200,28 +199,20 @@
         <!-- Box da Planilha Centralizada -->
         <div class="spreadsheet-container">
             <div class="spreadsheet-wrapper">
-                <!-- Por padrão, o link inicial já abre focado nas linhas de Ribeirão das Neves -->
                 <iframe id="sheet-iframe" src="https://google.com"></iframe>
             </div>
         </div>
     </div>
 
     <script>
-        // Função dinâmica para alternar entre as abas com visual moderno e carregar a planilha certa
         function switchTab(tabName, embedUrl) {
-            // Remove a classe ativa de todos os botões
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-            
-            // Adiciona a classe ativa no botão clicado
             document.querySelector(`.tab-btn[data-tab="${tabName}"]`).classList.add('active');
-            
-            // Muda o link do Iframe para carregar a aba correta do Google Sheets
             document.getElementById('sheet-iframe').src = embedUrl;
         }
 
-        // Script simples para cravar o horário exato da última atualização na tela
         function updateTime() {
             const now = new Date();
             const timeString = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
